@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>FFL Sales Script</title>
+<style>
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --primary: #0071e3;
+  --primary-dark: #0059b3;
+  --success: #30d158;
+  --warning: #ff9f0a;
+  --danger: #ff453a;
+  --border: #d2d2d7;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --objection-bg: #fff3e0;
+  --objection-border: #ff9f0a;
+  --coaching-bg: #e8f5e9;
+  --coaching-border: #30d158;
+  --input-bg: #f0f0f5;
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --card: #1c1c1e;
+  --text: #f5f5f7;
+  --text-secondary: #98989d;
+  --primary: #0a84ff;
+  --primary-dark: #409cff;
+  --border: #38383a;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.5);
+  --objection-bg: #2c2000;
+  --objection-border: #ff9f0a;
+  --coaching-bg: #002a00;
+  --coaching-border: #30d158;
+  --input-bg: #2c2c2e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: 100px;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* TOP BAR */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px 8px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.top-bar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.top-bar h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.top-bar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.icon-btn:active { transform: scale(0.9); }
+
+/* PROGRESS BAR */
+.progress-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.4s ease;
+  position: relative;
+}
+.progress-segment.active { background: var(--primary); }
+.progress-segment.completed { background: var(--success); }
+
+.progress-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* STAGE LABELS */
+.stage-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 0 2px;
+}
+
+.stage-label {
+  font-size: 8px;
+  color: var(--text-secondary);
+  text-align: center;
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+.stage-label.active { opacity: 1; color: var(--primary); }
+.stage-label.completed { opacity: 0.8; color: var(--success); }
+
+/* MAIN CONTENT */
+.main-content {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* SECTIONS */
+.script-section {
+  display: none;
+  animation: fadeIn 0.35s ease;
+}
+.script-section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.card-header {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.script-text {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.script-text .fill-field {
+  display: inline-block;
+  min-width: 80px;
+  padding: 2px 10px;
+  background: var(--input-bg);
+  border: 1.5px dashed var(--primary);
+  border-radius: 6px;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  vertical-align: baseline;
+}
+.script-text .fill-field:active { transform: scale(0.97); }
+.script-text .fill-field.filled {
+  background: rgba(0,113,227,0.1);
+  border-style: solid;
+  color: var(--primary-dark);
+}
+
+.direction {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+/* COACHING TIP */
+.coaching-tip {
+  background: var(--coaching-bg);
+  border-left: 4px solid var(--coaching-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.coaching-tip::before {
+  content: "TIP: ";
+  font-weight: 700;
+  color: var(--coaching-border);
+}
+
+/* INLINE OBJECTION ACCORDIONS */
+.objection-accordion {
+  background: var(--objection-bg);
+  border: 1.5px solid var(--objection-border);
+  border-radius: var(--radius-sm);
+  margin: 10px 0;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.objection-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+.objection-accordion-trigger:active { background: rgba(0,0,0,0.04); }
+
+.objection-accordion-trigger .obj-arrow {
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.objection-accordion.expanded .objection-accordion-trigger .obj-arrow {
+  transform: rotate(90deg);
+}
+
+.objection-accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 16px;
+}
+.objection-accordion.expanded .objection-accordion-body {
+  max-height: 500px;
+  padding: 0 16px 16px;
+}
+
+.objection-accordion-body .rebuttal {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text);
+  border-top: 1px solid var(--objection-border);
+  padding-top: 12px;
+}
+
+/* PRODUCT SELECTOR */
+.product-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.product-tab {
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.product-tab:active { transform: scale(0.97); }
+.product-tab.active {
+  border-color: var(--primary);
+  background: rgba(0,113,227,0.08);
+  color: var(--primary);
+}
+
+.product-script { display: none; }
+.product-script.active { display: block; }
+
+/* CHECKLIST */
+.checklist { list-style: none; }
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.checklist-item:last-child { border-bottom: none; }
+
+.check-circle {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-top: 2px;
+}
+.checklist-item.checked .check-circle {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.checklist-text {
+  font-size: 16px;
+  line-height: 1.45;
+  flex: 1;
+}
+.checklist-item.checked .checklist-text {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.checklist-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+  font-style: italic;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: -0.2px;
+}
+.nav-btn:active { transform: scale(0.97); }
+
+.nav-btn.secondary {
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+.nav-btn.primary {
+  background: var(--primary);
+  color: white;
+}
+.nav-btn.primary:active { background: var(--primary-dark); }
+
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin-bottom: 6px;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+/* STAGE BADGE */
+.stage-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(0,113,227,0.1);
+  color: var(--primary);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* INPUT MODAL */
+.input-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.input-modal.active { display: flex; }
+
+.input-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.input-card label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.input-card input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 18px;
+  background: var(--input-bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-card input:focus { border-color: var(--primary); }
+
+.input-card .input-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.input-card .input-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* NOTES PANEL */
+.notes-panel {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 85%;
+  max-width: 360px;
+  background: var(--card);
+  z-index: 250;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  animation: slideRight 0.3s ease;
+  padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
+  overflow-y: auto;
+}
+.notes-panel.active { display: block; }
+
+@keyframes slideRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.notes-panel h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.notes-panel textarea {
+  width: 100%;
+  height: 300px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-size: 15px;
+  font-family: inherit;
+  background: var(--input-bg);
+  color: var(--text);
+  resize: vertical;
+  outline: none;
+}
+.notes-panel textarea:focus { border-color: var(--primary); }
+
+.notes-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notes-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 240;
+}
+.notes-overlay.active { display: block; }
+
+/* UTILITY */
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.text-center { text-align: center; }
+.text-sm { font-size: 14px; }
+.text-secondary { color: var(--text-secondary); }
+.font-bold { font-weight: 700; }
+
+/* WELCOME SCREEN */
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.welcome-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--primary), #00c7ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: white;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(0,113,227,0.3);
+}
+
+.welcome-screen h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.welcome-screen p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  max-width: 300px;
+}
+
+.start-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: -0.3px;
+}
+.start-btn:active { transform: scale(0.97); background: var(--primary-dark); }
+
+.prospect-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  background: var(--input-bg);
+  color: var(--text);
+  outline: none;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.prospect-input:focus { border-color: var(--primary); }
+
+/* HIDE BOTTOM NAV ON WELCOME */
+body.on-welcome .bottom-nav { display: none; }
+body.on-welcome .top-bar { display: none; }
+
+/* COMPLETION SCREEN */
+.completion-screen {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.completion-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .main-content { padding: 24px; }
+  .script-text { font-size: 18px; }
+}
+</style>
+</head>
+<body class="on-welcome">
+
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar">
+  <div class="top-bar-row">
+    <h1 id="currentStageTitle">Intro</h1>
+    <div class="top-bar-actions">
+      <button class="icon-btn" onclick="toggleNotes()" title="Call Notes">&#128221;</button>
+      <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode" id="themeBtn">&#127769;</button>
+      <button class="icon-btn" onclick="resetCall()" title="New Call">&#8635;</button>
+    </div>
+  </div>
+  <div class="progress-container" id="progressBar"></div>
+  <div class="stage-labels" id="stageLabels"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+  <!-- WELCOME -->
+  <div class="script-section active" id="welcome">
+    <div class="welcome-screen">
+      <div class="welcome-logo">&#9889;</div>
+      <h1>FFL Script</h1>
+      <p>Your dynamic call guide. Follow the flow, handle objections, close more deals.</p>
+      <input type="text" class="prospect-input" id="prospectNameInput" placeholder="Prospect's First Name" autocomplete="off">
+      <button class="start-btn" onclick="startCall()">Start Call</button>
+    </div>
+  </div>
+
+  <!-- SECTION 1: INTRO -->
+  <div class="script-section" id="sec-intro">
+    <span class="stage-badge">Stage 1 of 10</span>
+    <div class="section-title">Intro</div>
+    <div class="section-subtitle">Open the call and establish who you are</div>
+
+    <div class="card">
+      <div class="card-header">Opening Line</div>
+      <div class="script-text">
+        <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>? <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, this is Connor. I was getting back to you on the request you made with us... it looks like you put your email as <span class="fill-field" data-field="email" onclick="editField(this)">email</span>? Yeah, this is for the veteran benefits &mdash; were you looking for the life insurance that builds cash value or leaving money to the family?
+      </div>
+    </div>
+
+    <div class="coaching-tip">Match their energy. If they're upbeat, be upbeat. If they're calm, slow it down. Mirror them.</div>
+
+    <div class="card">
+      <div class="card-header">Confirm DOB</div>
+      <div class="script-text">
+        Okay awesome, I got your Date of Birth down as <span class="fill-field" data-field="dob" onclick="editField(this)">DOB</span>?
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"Who is this? Do you work for the VA?"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">I'm glad you asked my friend. We partner with the VA, because back in the day, you guys only used to have one life insurance policy through SGLI and VGLI. Now we work with all veteran life insurance partner programs to make sure we can shop them all, and put your family in the best position. Does that make sense? <em>Continue to script &rarr;</em></div>
+        <div class="coaching-tip">Say "my friend" warmly. You're not defensive &mdash; you're proud of what you do. Confidence kills suspicion.</div>
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"I'm busy, call me back later"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">I get it, you probably have your hands full &mdash; before I let you go, do you mind if I ask you one quick question to make sure it's even worth me calling you back later? Okay, just wanted to make sure we point you in the right direction &mdash; what were you hoping to accomplish when you filled this out? <em>Continue to script &rarr;</em></div>
+        <div class="coaching-tip">Don't sound desperate. Sound like you're doing them a favor by saving them a callback. Quick and respectful wins here.</div>
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"Just tell me the price"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">Hey <span class="fill-field" data-field="name" onclick="editField(this);event.stopPropagation();">Name</span>, I knew I liked you, that makes my life easier... Straight to the point. So basically you're saying you don't care what it is you're buying... as long as the price aligns with your budget you're going to go with it no matter what... is that right? <em>(let them respond)</em><br><br>Gotcha, so you do actually want to go through the info to make sure that it makes sense? <em>Continue to script &rarr;</em></div>
+        <div class="coaching-tip">Use humor and a smile in your voice. You're flipping their objection into a reason to keep going. Pause and let them answer &mdash; they'll say "yeah, I want to know what it is."</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">No Objection &mdash; Continue</div>
+      <div class="script-text">
+        Okay, perfect &mdash; just so you know who I am, I'm a broker for all the veterans in the state so I work with every top rated company out there, so I can do all the shopping around for you. Does that make sense?
+        <br><br>
+        <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, I'm going to text you my business card so that way you can put a face to the name and have my NPN number. With that number that's how you can look me up if you like too. Let me know when you got that.
+        <br><br>
+        So I'm just going to ask you some simple health questions just to see what company will be the best fit for you...
+      </div>
+    </div>
+
+    <div class="coaching-tip">Pause after "Does that make sense?" &mdash; let them confirm. Don't rush past it.</div>
+  </div>
+
+  <!-- SECTION 2: HEALTH QUESTIONS -->
+  <div class="script-section" id="sec-health">
+    <span class="stage-badge">Stage 2 of 10</span>
+    <div class="section-title">Health Questions</div>
+    <div class="section-subtitle">Check off each question as you go</div>
+
+    <div class="card">
+      <ul class="checklist" id="healthChecklist">
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Are you a smoker or non-smoker or use any tobacco products?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">It looks like you are <span class="fill-field" data-field="age" onclick="editField(this);event.stopPropagation();">age</span> correct?</div>
+            <div class="checklist-sub">Collect DOB</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">As far as your health goes, do you have any medical conditions or take any prescriptions for anything?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any history at all of heart attack, stroke, cancer or diabetes?</div>
+            <div class="checklist-sub">If diabetes: pills or shot? A1C level?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any high blood pressure or high cholesterol?</div>
+            <div class="checklist-sub">If yes: is it controlled? How many meds?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any kidney or liver disease?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">What about any thyroid issues?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any asthma or COPD?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any Lupus or Arthritis?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any anxiety, depression or bipolar type medications?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">Any surgeries in the last 5 years?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">How's your driving record? Any DUIs?</div>
+            <div class="checklist-sub">"I didn't think so, they do just require us to ask"</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">What about felonies, probation or parole?</div>
+          </div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div>
+            <div class="checklist-text">And what's a good height & weight for you?</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="coaching-tip">Keep this conversational, not interrogation-style. React naturally: "Great, no worries" or "Okay, good to know."</div>
+  </div>
+
+  <!-- SECTION 3: NEEDS ANALYSIS -->
+  <div class="script-section" id="sec-needs">
+    <span class="stage-badge">Stage 3 of 10</span>
+    <div class="section-title">Needs Analysis</div>
+    <div class="section-subtitle">This is where you get ammo for "I want to think about it"</div>
+
+    <div class="card">
+      <div class="card-header">Burial vs Cremation</div>
+      <div class="script-text">
+        Do you want to be buried or cremated?
+      </div>
+      <div class="direction mt-8">
+        Burial = bare minimum 15K in coverage<br>
+        Cremation = bare minimum 5K in coverage
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Mortgage</div>
+      <div class="script-text">
+        Do you have a mortgage?
+      </div>
+      <div class="direction mt-8">If yes: How much is left on the home?</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Current Coverage</div>
+      <div class="script-text">
+        Do you have any current life insurance? Whole life or term?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">If They HAVE Coverage</div>
+      <div class="script-text">
+        Did something happen that you felt like you didn't have enough coverage for your family?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">If They DON'T Have Coverage</div>
+      <div class="script-text">
+        Have you ran into any road blocks that prevented you from getting life insurance?
+      </div>
+    </div>
+
+    <div class="coaching-tip">Listen carefully here. Their answers become your closing ammo later when they say "I want to think about it." Remember what matters to them.</div>
+  </div>
+
+  <!-- SECTION 4: OCCUPATION / FINANCES -->
+  <div class="script-section" id="sec-finances">
+    <span class="stage-badge">Stage 4 of 10</span>
+    <div class="section-title">Occupation & Finances</div>
+    <div class="section-subtitle">Understand their financial picture</div>
+
+    <div class="card">
+      <div class="script-text">
+        And are you still currently working, or fully retired... what does that look like?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="script-text">
+        How much do you make a month, ballpark?
+      </div>
+      <div class="direction mt-8">Whatever they say they make a month is what their spouse will lose when they pass away. Use this later.</div>
+    </div>
+
+    <div class="coaching-tip">This is powerful ammo for the close. If they make $4K/month, that's $4K/month their family loses. Reference this number later.</div>
+  </div>
+
+  <!-- SECTION 5: PRODUCT SELECTION -->
+  <div class="script-section" id="sec-product">
+    <span class="stage-badge">Stage 5 of 10</span>
+    <div class="section-title">Product Explanation</div>
+    <div class="section-subtitle">Select the product type to show the right pitch</div>
+
+    <div class="product-tabs">
+      <button class="product-tab active" onclick="selectProduct('whole')">Whole Life</button>
+      <button class="product-tab" onclick="selectProduct('term')">Term</button>
+      <button class="product-tab" onclick="selectProduct('iul')">IUL</button>
+    </div>
+
+    <!-- WHOLE LIFE -->
+    <div class="product-script active" id="product-whole">
+      <div class="card">
+        <div class="card-header">Level Premium</div>
+        <div class="script-text">
+          So go ahead and write down <strong>level premium</strong>. What that means is the price of this product is never going to change on you, so if you get approved you would lock in your age and health and you would never have to worry about paying for something more expensive down the road.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Day One Coverage</div>
+        <div class="script-text">
+          Now this is <strong>day one coverage</strong> &mdash; so you make one payment on this and you pass away the next day, your beneficiary is getting paid the full death benefit tax free.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Cash Value</div>
+        <div class="script-text">
+          Then go ahead and write down <strong>cash value</strong>. So every whole life policy does come with a cash value and obviously this isn't going to make you rich like Bill Gates, but it will grow over time so if you needed an emergency fund, you'd be able to use some of the cash value that was built up within the policy over the years as a <strong>tax free loan</strong> that never has to be paid back. It just gets reduced from your death benefit when you pass away... So any questions on that at all?
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Living Benefits</div>
+        <div class="script-text">
+          Then go ahead and write down <strong>living benefits</strong> &mdash; so if you got critically, chronically, or terminally ill you actually have access to the death benefit while you're alive to cover medical expenses and loss of income. For example, if you get chronically ill the insurance company will pay you monthly so you can keep the bills running.
+        </div>
+      </div>
+    </div>
+
+    <!-- TERM -->
+    <div class="product-script" id="product-term">
+      <div class="card">
+        <div class="card-header">Term Coverage</div>
+        <div class="script-text">
+          OK so this coverage here is gonna cover you for <span class="fill-field" data-field="termYears" onclick="editField(this)">term years</span>. Now go ahead and write down <strong>level premium</strong>... So the price of it will never go up on you.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Living Benefits</div>
+        <div class="script-text">
+          Now the other thing to write down is it does come with <strong>living benefits</strong> &mdash; so if you got critically, chronically, or terminally ill you have access to the death benefit while you're alive in order to cover medical expenses and loss of income.
+        </div>
+      </div>
+    </div>
+
+    <!-- IUL -->
+    <div class="product-script" id="product-iul">
+      <div class="card">
+        <div class="card-header">Permanent Death Benefit</div>
+        <div class="script-text">
+          So a IUL has a <strong>permanent death benefit</strong> at the foundation providing tax-free payout to your beneficiary when you pass away. This will also last your whole life. It will never lapse on you and it is a <strong>level premium</strong> so the price of the product is never gonna go up on you down the road.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Cash Value</div>
+        <div class="script-text">
+          Then go ahead and write down <strong>cash value</strong> for me. So what makes a IUL so unique is the cash value over time &mdash; in the next 3, 4, 5 years you're gonna have cash built up in the policy that you're able to take from the life insurance policy tax-free and never have to pay it back. It just gets reduced from your death benefit when you pass away.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Living Benefits</div>
+        <div class="script-text">
+          Then go ahead and write down <strong>living benefits</strong> so if you got critically, chronically, or terminally ill you actually have access to the death benefit while you're alive to cover medical expenses and loss of income. For example if you get chronically ill the insurance company will pay you monthly so you can keep the bills running.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Simple Example (If Confused)</div>
+        <div class="script-text">
+          For example, let's say you have a $300,000 IUL and you take out $10,000 cash that was built up within the policy to go buy yourself a new lawnmower &mdash; now when you pass away instead of the family getting $300,000 they're now going to get $290,000 in a death benefit. Does that make sense?
+        </div>
+      </div>
+    </div>
+
+    <div class="coaching-tip">Have them write things down. It keeps them engaged and makes them feel in control. Pause after each point to check for questions.</div>
+  </div>
+
+  <!-- SECTION 6: QUOTE & PITCH -->
+  <div class="script-section" id="sec-quote">
+    <span class="stage-badge">Stage 6 of 10</span>
+    <div class="section-title">Quote & Pitch</div>
+    <div class="section-subtitle">Pull up your quote tool and present options</div>
+
+    <div class="card">
+      <div class="card-header">Transition to Quote</div>
+      <div class="script-text">
+        Okay, so what I'm going to do is pull up the best company in line first and if you don't get approved here we will go to the next best company in line.
+        <br><br>
+        So the top company I'm looking at right now for you with the lowest premiums would be a company called <span class="fill-field" data-field="company" onclick="editField(this)">Company</span>. Have you ever heard of them before?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">If YES &mdash; They've Heard of Them</div>
+      <div class="script-text">
+        Perfect, they've been around over 100+ years and they are A+ rated financially so they are not going anywhere.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">If NO &mdash; Haven't Heard of Them</div>
+      <div class="script-text">
+        No worries, they've been around over 100+ years and they are A+ rated financially so they're not going anywhere.
+      </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--primary);">
+      <div class="card-header">Pitch the Numbers</div>
+      <div class="script-text">
+        Okay <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, so go ahead and write down <span class="fill-field" data-field="coverage1" onclick="editField(this)">Coverage 1</span> and that is going to be for <span class="fill-field" data-field="price1" onclick="editField(this)">Price 1</span> a month.
+        <br><br>
+        And the second option is going to be <span class="fill-field" data-field="coverage2" onclick="editField(this)">Coverage 2</span> for <span class="fill-field" data-field="price2" onclick="editField(this)">Price 2</span>.
+        <br><br>
+        <strong>Out of those options, if you get approved, which one would provide the best coverage for your needs?</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Confirm Comfort</div>
+      <div class="script-text">
+        Okay awesome. If you do get approved, I want to make sure that one is going to be comfortable for you each and every month. I don't want to give you a policy that would be uncomfortable and it falls off and you lose all money you put in &mdash; so is that for sure comfortable?
+      </div>
+    </div>
+
+    <div class="coaching-tip">Always give two options &mdash; this is a "which one" close, not a "yes or no." Let them pick between options rather than deciding to buy or not.</div>
+  </div>
+
+  <!-- SECTION 7: COLLECT INFO -->
+  <div class="script-section" id="sec-info">
+    <span class="stage-badge">Stage 7 of 10</span>
+    <div class="section-title">Collect Info</div>
+    <div class="section-subtitle">Get their details on file</div>
+
+    <div class="card">
+      <div class="card-header">Payment Date</div>
+      <div class="script-text">
+        Perfect, so what I'm going to do is try and get you approved and once you get approved you just let me know what day you want the policy to come out of the account each month.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Write All Their Information Down</div>
+      <ul class="checklist">
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div class="checklist-text">What's the best mailing address to send the policy to?</div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div class="checklist-text">Then that email on file &mdash; they will also send you a digital copy as well.</div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div class="checklist-text">Then were you born in the state of <span class="fill-field" data-field="birthState" onclick="editField(this);event.stopPropagation();">State</span>?</div>
+        </li>
+        <li class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-circle"></div>
+          <div class="checklist-text">Then beneficiary first name, last name, and phone number.</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Beneficiary Explanation</div>
+      <div class="script-text">
+        Okay awesome, so once you get approved the biggest thing I do is make sure your beneficiary knows exactly what you got set up &mdash; so the company name, policy number, how much coverage you have, and the phone number to the company. So that way they know exactly who to call to get the money because the last thing I would want to happen is you pay for a policy and your beneficiary doesn't know how to get the money.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: DL & SOCIAL -->
+  <div class="script-section" id="sec-social">
+    <span class="stage-badge">Stage 8 of 10</span>
+    <div class="section-title">DL & Social</div>
+    <div class="section-subtitle">Collect sensitive info with confidence</div>
+
+    <div class="card">
+      <div class="card-header">Driver's License</div>
+      <div class="script-text">
+        Okay the first thing they will need here is the driver's license number &mdash; do you have that number memorized or do you need a second to grab it?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Social Security</div>
+      <div class="script-text">
+        Then do you have your social memorized or do you need a second to grab that one?
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"Why do you need that?"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">I don't need it, <strong>they</strong> do... So I'm ready for that when you are.</div>
+        <div class="coaching-tip">Short and calm. Emphasize "they" not "I." You're just the messenger. Then go silent &mdash; let the pause do the work.</div>
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"I don't feel comfortable giving that out"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">Yeah, so in order to run the prescription check as well as background check they require a social because everything that you've done in the past two years is tied to that number. So I'm ready for that when you are.</div>
+        <div class="coaching-tip">Give them a logical reason. "Prescription check" and "background check" make it sound routine and required &mdash; not optional. End with confidence, not apology.</div>
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"I'm still not giving that out"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">Okay no worries, I've been doing this for a while, so I understand where you're coming from but I'm gonna go ahead and text you over this link. That's going to let you see my screen that way you can see what I'm doing here. But let me know when you got it. <em>(Send them the link through CrankWheel)</em></div>
+        <div class="coaching-tip">This is your last resort &mdash; don't jump here first. Screen sharing builds trust by giving them control. Send the link immediately, don't hesitate.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">After Social &mdash; Lighten the Mood</div>
+      <div class="script-text">
+        Ok and we already went over your health but you don't plan on doing any skydiving, boat racing or participating in a demolition derby in the next 2 years correct? <em>(joke &mdash; get them laughing)</em>
+        <br><br>
+        Awesome, and then for your beneficiary are you giving <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span> 100% of the payout?
+        <br><br>
+        Alrighty then, spell their first and last name.
+      </div>
+    </div>
+
+    <div class="coaching-tip">Say "I don't need it, they do" with complete calm confidence. Don't sound apologetic. You're the expert here.</div>
+  </div>
+
+  <!-- SECTION 9: BANK INFO -->
+  <div class="script-section" id="sec-bank">
+    <span class="stage-badge">Stage 9 of 10</span>
+    <div class="section-title">Bank Info</div>
+    <div class="section-subtitle">Collect payment details</div>
+
+    <div class="card">
+      <div class="script-text">
+        Now if you were to get approved here, is there a certain day you want this to come out of the account each month or does it not really matter?
+        <br><br>
+        Okay and what's the name of the bank you want to put on file?
+      </div>
+      <div class="direction mt-8">Look up their routing number on Google</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Confirm Routing Number</div>
+      <div class="script-text">
+        Okay cool, they are partnered with them already so I got the routing number here. I'll read this one off to you just let me know if it's correct?
+        <br><br>
+        Okay, and then the account number?
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"I don't feel comfortable giving that out"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">Yeah, completely understand <span class="fill-field" data-field="name" onclick="editField(this);event.stopPropagation();">Name</span> &mdash; so the insurance company just wants to make sure that the bank is in your name and you're not El Chapo trying to commit insurance fraud or anything like that. So we could do one of two things &mdash; we could either set this out seven days to make sure that once you are approved you just let me know if you wanna keep it for that certain day, or we could just use a bank account that has no money in it. Bottom line is they do need a bank on file to make sure it's in your name.</div>
+        <div class="coaching-tip">The El Chapo joke breaks tension &mdash; deliver it with a laugh. Then give them two easy options so they feel in control. Both options still get you the bank info.</div>
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"I don't wanna start till I'm approved"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">Yeah, absolutely &mdash; it's not going to come out of your bank anyways until you are actually approved and if it did, you would just cancel the policy anyways, and then that affects my relationship with the carrier which I don't wanna put that at jeopardy.</div>
+        <div class="coaching-tip">Agree with them first &mdash; "yeah, absolutely" validates their concern. Then explain nothing happens until approval. They feel safe, you move forward.</div>
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"I want to think about it"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">Oh okay, I gotcha &mdash; so I'm guessing the monthly premium is just a little uncomfortable for you? <em>(yes)</em> Ok, I definitely wouldn't want to set this up if it's going to be uncomfortable for you. So what we can do is start lower and you can always shoot me a call down the road to upgrade.</div>
+        <div class="coaching-tip">"Think about it" almost always means price. Diagnose the real issue, then offer a lower option. A smaller sale is better than no sale. You can always upgrade them later.</div>
+      </div>
+    </div>
+
+    <div class="coaching-tip">If they hesitate, stay calm. Don't rush or sound nervous. Treat it as routine &mdash; because it is.</div>
+  </div>
+
+  <!-- SECTION 10: CLOSE -->
+  <div class="script-section" id="sec-close">
+    <span class="stage-badge">Stage 10 of 10</span>
+    <div class="section-title">Close & Recap</div>
+    <div class="section-subtitle">Lock it down and set expectations</div>
+
+    <div class="card" style="border-left: 4px solid var(--success);">
+      <div class="card-header">If They Get Approved</div>
+      <div class="script-text">
+        Okay awesome, so do you want the good news or the bad news?
+        <br><br>
+        Bad news is you're stuck with me forever.
+        <br><br>
+        <strong>Good news is you're approved.</strong>
+        <br><br>
+        So in 4-14 days you're gonna get a policy packet so I want you to write my name and phone number on the front of the packet so your beneficiary does not have to sift through the packet to figure out who to call.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Recap Coverage</div>
+      <div class="script-text">
+        Now, before we get off the phone I want to make sure you're fully aware of what this coverage is and how it works... So with that being said, <strong>to the best of your ability can you explain to me what we set up today for you and your family?</strong>
+      </div>
+      <div class="direction mt-8">Let them explain it back to you. This cements their understanding and reduces cancellations.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Anti-Cancel Lock</div>
+      <div class="script-text">
+        Perfect, I want to make sure you're not going to cancel, because the way the insurance company dictates whether I keep a job or not is how many times you guys cancel or if it goes into insufficient funds or overdrafts your bank account &mdash; so do you foresee yourself canceling this? Because I do not want to give you this life insurance coverage if you're going to cancel.
+        <br><br>
+        Perfect, because if you cancel it affects my relationship with the insurance companies and I'm not going to put that at jeopardy. I wouldn't want you to cancel this 3 months from now and lose all the money you put into this because I set you up with something that you couldn't afford.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Contact Protection</div>
+      <div class="script-text">
+        Also please make sure to save me as a contact in your phone...
+        <br><br>
+        Now if someone reaches out to you and it doesn't appear as Connor Kachlic, then you know not to give them any information in regards to your policy or life insurance in general. I will be the only one calling or reaching out to you with any information in regards to your policy moving forward here on out. Now if they keep bothering you or even if it's spam, send that number over to me and I'll get your number off that call list because as of right now I'll be your agent moving forward and I directly represent you and your family. Does that make sense?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Referral Ask</div>
+      <div class="script-text">
+        Do you have any close friends or family that you think would benefit from having a call like this?
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Sign Off</div>
+      <div class="script-text">
+        Awesome, I'm going to send you a text with all the information but do you have any questions for me at all? Awesome, have a blessed day!
+      </div>
+    </div>
+
+    <div class="coaching-tip">The recap is critical for reducing chargebacks. If they can't explain it, they don't understand it &mdash; and they'll cancel.</div>
+
+    <div class="card text-center" style="margin-top: 20px;">
+      <div style="font-size: 40px; margin-bottom: 12px;">&#127881;</div>
+      <div class="section-title" style="font-size: 22px;">Call Complete</div>
+      <div class="text-secondary text-sm mt-8">Great work. Every call gets better.</div>
+      <button class="start-btn mt-16" onclick="resetCall()" style="max-width: 200px; margin: 16px auto 0;">Start New Call</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- INPUT MODAL -->
+<div class="input-modal" id="inputModal">
+  <div class="input-card">
+    <label id="inputLabel">Enter value</label>
+    <input type="text" id="inputField" autocomplete="off">
+    <div class="input-actions">
+      <button class="secondary" style="background:var(--input-bg);color:var(--text);" onclick="cancelInput()">Cancel</button>
+      <button class="primary" style="background:var(--primary);color:white;" onclick="confirmInput()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES PANEL -->
+<div class="notes-overlay" id="notesOverlay" onclick="toggleNotes()"></div>
+<div class="notes-panel" id="notesPanel">
+  <button class="notes-close" onclick="toggleNotes()">&times;</button>
+  <h2>Call Notes</h2>
+  <p class="text-secondary text-sm mb-12">Notes are saved automatically for this session.</p>
+  <textarea id="notesArea" placeholder="Jot down key details here...&#10;&#10;- Smoker/Non-smoker:&#10;- Health issues:&#10;- Mortgage amount:&#10;- Monthly income:&#10;- Product chosen:&#10;- Coverage amount:&#10;- Notes:"></textarea>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+  <button class="nav-btn secondary" id="prevBtn" onclick="prevSection()" disabled>&larr; Back</button>
+  <button class="nav-btn primary" id="nextBtn" onclick="nextSection()">Next &rarr;</button>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const STAGES = [
+  { id: 'sec-intro', label: 'Intro', title: 'Intro' },
+  { id: 'sec-health', label: 'Health', title: 'Health Questions' },
+  { id: 'sec-needs', label: 'Needs', title: 'Needs Analysis' },
+  { id: 'sec-finances', label: 'Finance', title: 'Occupation & Finances' },
+  { id: 'sec-product', label: 'Product', title: 'Product Explanation' },
+  { id: 'sec-quote', label: 'Quote', title: 'Quote & Pitch' },
+  { id: 'sec-info', label: 'Info', title: 'Collect Info' },
+  { id: 'sec-social', label: 'DL/SSN', title: 'DL & Social' },
+  { id: 'sec-bank', label: 'Bank', title: 'Bank Info' },
+  { id: 'sec-close', label: 'Close', title: 'Close & Recap' },
+];
+
+let currentStage = -1; // -1 = welcome
+let fieldData = {};
+let activeFieldEl = null;
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  buildProgressBar();
+  loadTheme();
+  loadNotes();
+  // Focus name input
+  document.getElementById('prospectNameInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') startCall();
+  });
+}
+
+function buildProgressBar() {
+  const bar = document.getElementById('progressBar');
+  const labels = document.getElementById('stageLabels');
+  bar.innerHTML = '';
+  labels.innerHTML = '';
+  STAGES.forEach((s, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'progress-segment';
+    seg.id = 'prog-' + i;
+    bar.appendChild(seg);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'stage-label';
+    lbl.textContent = s.label;
+    lbl.onclick = () => { if (i <= currentStage) goToStage(i); };
+    lbl.id = 'lbl-' + i;
+    labels.appendChild(lbl);
+  });
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function startCall() {
+  const nameInput = document.getElementById('prospectNameInput');
+  const name = nameInput.value.trim() || 'Prospect';
+  fieldData['name'] = name;
+  updateAllFields();
+  document.body.classList.remove('on-welcome');
+  document.getElementById('welcome').classList.remove('active');
+  goToStage(0);
+}
+
+function goToStage(index) {
+  // Hide all sections
+  document.querySelectorAll('.script-section').forEach(s => s.classList.remove('active'));
+
+  currentStage = index;
+
+  // Show current
+  document.getElementById(STAGES[index].id).classList.add('active');
+
+  // Update title
+  document.getElementById('currentStageTitle').textContent = STAGES[index].title;
+
+  // Update progress
+  STAGES.forEach((s, i) => {
+    const seg = document.getElementById('prog-' + i);
+    const lbl = document.getElementById('lbl-' + i);
+    seg.className = 'progress-segment';
+    lbl.className = 'stage-label';
+    if (i < currentStage) {
+      seg.classList.add('completed');
+      lbl.classList.add('completed');
+    } else if (i === currentStage) {
+      seg.classList.add('active');
+      lbl.classList.add('active');
+    }
+  });
+
+  // Update buttons
+  document.getElementById('prevBtn').disabled = currentStage === 0;
+  const nextBtn = document.getElementById('nextBtn');
+  if (currentStage === STAGES.length - 1) {
+    nextBtn.style.display = 'none';
+  } else {
+    nextBtn.style.display = '';
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextSection() {
+  if (currentStage < STAGES.length - 1) goToStage(currentStage + 1);
+}
+
+function prevSection() {
+  if (currentStage > 0) goToStage(currentStage - 1);
+}
+
+function resetCall() {
+  if (currentStage >= 0 && !confirm('Start a new call? Current progress will be reset.')) return;
+  fieldData = {};
+  currentStage = -1;
+  document.querySelectorAll('.script-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('welcome').classList.add('active');
+  document.body.classList.add('on-welcome');
+  document.getElementById('prospectNameInput').value = '';
+
+  // Reset checklists
+  document.querySelectorAll('.checklist-item').forEach(item => item.classList.remove('checked'));
+
+  // Reset fill fields
+  document.querySelectorAll('.fill-field').forEach(f => {
+    f.textContent = f.dataset.field.charAt(0).toUpperCase() + f.dataset.field.slice(1);
+    f.classList.remove('filled');
+  });
+
+  // Clear notes
+  document.getElementById('notesArea').value = '';
+  saveNotes();
+}
+
+// ============================================================
+// FILL FIELDS
+// ============================================================
+const FIELD_LABELS = {
+  name: "Prospect's Name",
+  email: "Email Address",
+  dob: "Date of Birth",
+  age: "Age",
+  company: "Insurance Company",
+  coverage1: "Coverage Option 1",
+  price1: "Price Option 1",
+  coverage2: "Coverage Option 2",
+  price2: "Price Option 2",
+  termYears: "Term Length (years)",
+  beneficiary: "Beneficiary Name",
+  birthState: "State of Birth",
+};
+
+function editField(el) {
+  event.stopPropagation();
+  activeFieldEl = el;
+  const field = el.dataset.field;
+  const label = FIELD_LABELS[field] || field;
+  document.getElementById('inputLabel').textContent = label;
+  const input = document.getElementById('inputField');
+  input.value = fieldData[field] || '';
+  input.setAttribute('placeholder', label);
+  document.getElementById('inputModal').classList.add('active');
+  setTimeout(() => input.focus(), 100);
+}
+
+function confirmInput() {
+  const input = document.getElementById('inputField');
+  const val = input.value.trim();
+  if (val && activeFieldEl) {
+    const field = activeFieldEl.dataset.field;
+    fieldData[field] = val;
+    updateAllFields();
+  }
+  closeInput();
+}
+
+function cancelInput() {
+  closeInput();
+}
+
+function closeInput() {
+  document.getElementById('inputModal').classList.remove('active');
+  activeFieldEl = null;
+}
+
+function updateAllFields() {
+  document.querySelectorAll('.fill-field').forEach(f => {
+    const field = f.dataset.field;
+    if (fieldData[field]) {
+      f.textContent = fieldData[field];
+      f.classList.add('filled');
+    }
+  });
+}
+
+// Enter key in input modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('inputModal').classList.contains('active')) {
+    confirmInput();
+  }
+  if (e.key === 'Escape') {
+    closeInput();
+    closeAllModals();
+  }
+});
+
+// ============================================================
+// OBJECTION ACCORDIONS
+// ============================================================
+function toggleAccordion(el) {
+  el.classList.toggle('expanded');
+}
+
+// ============================================================
+// CHECKLISTS
+// ============================================================
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const circle = el.querySelector('.check-circle');
+  circle.innerHTML = el.classList.contains('checked') ? '&#10003;' : '';
+}
+
+// ============================================================
+// PRODUCT SELECTOR
+// ============================================================
+function selectProduct(type) {
+  document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.product-script').forEach(s => s.classList.remove('active'));
+
+  event.target.classList.add('active');
+  document.getElementById('product-' + type).classList.add('active');
+}
+
+// ============================================================
+// DARK MODE
+// ============================================================
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+  document.getElementById('themeBtn').innerHTML = isDark ? '&#127769;' : '&#9728;&#65039;';
+  localStorage.setItem('ffl-theme', isDark ? 'light' : 'dark');
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem('ffl-theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeBtn').innerHTML = '&#9728;&#65039;';
+  }
+}
+
+// ============================================================
+// NOTES
+// ============================================================
+function toggleNotes() {
+  const panel = document.getElementById('notesPanel');
+  const overlay = document.getElementById('notesOverlay');
+  const isOpen = panel.classList.contains('active');
+  panel.classList.toggle('active');
+  overlay.classList.toggle('active');
+  if (isOpen) saveNotes();
+}
+
+function saveNotes() {
+  const notes = document.getElementById('notesArea').value;
+  localStorage.setItem('ffl-call-notes', notes);
+}
+
+function loadNotes() {
+  const saved = localStorage.getItem('ffl-call-notes');
+  if (saved) document.getElementById('notesArea').value = saved;
+}
+
+// Auto-save notes
+document.getElementById('notesArea')?.addEventListener('input', saveNotes);
+
+// ============================================================
+// INIT
+// ============================================================
+init();
+</script>
+
+</body>
+</html>
