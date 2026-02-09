@@ -1232,14 +1232,14 @@ body.on-welcome .top-bar { display: none; }
     <div class="card" id="bankLookupCard">
       <div class="card-header">Bank Routing Lookup</div>
       <div style="position:relative;">
-        <input type="text" id="stateInput" placeholder="Type or select state..." autocomplete="off"
+        <input type="text" id="stateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="state-lookup-x"
           style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;"
           oninput="searchState(this.value)" onfocus="searchState(this.value)">
         <input type="hidden" id="stateSelect" value="">
         <div id="stateDropdown" style="display:none;position:absolute;left:0;right:0;top:calc(100% - 10px);background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:11;box-shadow:var(--shadow-lg);"></div>
       </div>
       <div style="position:relative;">
-        <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="off"
+        <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="bank-lookup-x"
           style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
           oninput="searchBank(this.value)" onfocus="searchBank(this.value)">
         <div id="bankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
@@ -1622,8 +1622,8 @@ function toggleAccordion(el) {
 const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
 const STATE_NAMES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"Washington DC"};
 
-// Bank data loaded from external script
-let BANK_DATA = {};
+// Bank data loaded from banks.js
+if (typeof BANK_DATA === 'undefined') var BANK_DATA = {};
 
 function initStateSelect() {}
 
