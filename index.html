@@ -1447,7 +1447,7 @@ function buildProgressBar() {
     const lbl = document.createElement('div');
     lbl.className = 'stage-label';
     lbl.textContent = s.label;
-    lbl.onclick = () => { if (i <= currentStage) goToStage(i); };
+    lbl.onclick = () => { goToStage(i); };
     lbl.id = 'lbl-' + i;
     labels.appendChild(lbl);
   });
