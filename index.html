@@ -1241,7 +1241,7 @@ body.on-welcome .top-bar { display: none; }
       <div style="position:relative;">
         <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="bank-lookup-x"
           style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
-          oninput="searchBank(this.value)" onfocus="searchBank(this.value)">
+          oninput="searchBank(this.value)" onfocus="searchBank(this.value)" onblur="setTimeout(lookupRouting,200)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('bankDropdown').style.display='none';lookupRouting();}">
         <div id="bankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
       </div>
       <div id="routingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
@@ -1648,7 +1648,7 @@ function pickState(code) {
   document.getElementById('stateSelect').value = code;
   document.getElementById('stateDropdown').style.display = 'none';
   const bankVal = document.getElementById('bankInput').value.trim();
-  if (bankVal && BANK_DATA[bankVal]) selectBank(bankVal);
+  if (bankVal) lookupRouting();
 }
 
 function searchBank(val) {
@@ -1671,33 +1671,53 @@ function searchBank(val) {
 function selectBank(name) {
   document.getElementById('bankInput').value = name;
   document.getElementById('bankDropdown').style.display = 'none';
+  lookupRouting();
+}
+
+function lookupRouting() {
+  const bankVal = document.getElementById('bankInput').value.trim();
   const state = document.getElementById('stateSelect').value;
-  const entry = BANK_DATA[name];
   const notFound = document.getElementById('routingNotFound');
   const result = document.getElementById('routingResult');
-  if (!entry) { result.style.display='none'; notFound.style.display='none'; return; }
+  result.style.display = 'none';
+  notFound.style.display = 'none';
+  if (!bankVal) return;
+  if (!state) {
+    alert('Please select a state first');
+    document.getElementById('stateInput').focus();
+    return;
+  }
+  // Find bank by matching lowercase
+  const query = bankVal.toLowerCase();
+  let entry = null;
+  let matchedName = bankVal;
+  for (const key of Object.keys(BANK_DATA)) {
+    if (key.toLowerCase() === query || key.toLowerCase().includes(query) || query.includes(key.toLowerCase())) {
+      entry = BANK_DATA[key];
+      matchedName = key;
+      break;
+    }
+  }
+  if (!entry) {
+    document.getElementById('googleFallback').href = 'https://www.google.com/search?q=' + encodeURIComponent(bankVal + ' routing number ' + state);
+    notFound.innerHTML = 'Bank not in database. <a id="googleFallback" href="https://www.google.com/search?q=' + encodeURIComponent(bankVal + ' routing number ' + state) + '" target="_blank" style="color:var(--primary);font-weight:600;">Search Google</a>';
+    notFound.style.display = 'block';
+    return;
+  }
   let routing = null;
   if (typeof entry === 'string') {
     routing = entry;
-  } else if (state && entry[state]) {
+  } else if (entry[state]) {
     routing = entry[state];
-  } else if (state && entry['ALL']) {
+  } else if (entry['ALL']) {
     routing = entry['ALL'];
-  } else if (!state) {
-    result.style.display='none';
-    notFound.style.display='none';
-    alert('Please select a state first');
-    document.getElementById('stateSelect').focus();
-    return;
   }
   if (routing) {
     document.getElementById('routingNumber').textContent = routing;
-    document.getElementById('routingBankName').textContent = name + (state ? ' (' + state + ')' : '');
+    document.getElementById('routingBankName').textContent = matchedName + ' (' + state + ')';
     result.style.display = 'block';
-    notFound.style.display = 'none';
   } else {
-    result.style.display = 'none';
-    document.getElementById('googleFallback').href = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' routing number ' + (state || ''));
+    notFound.innerHTML = 'No routing number for <strong>' + matchedName + '</strong> in <strong>' + state + '</strong>. <a href="https://www.google.com/search?q=' + encodeURIComponent(matchedName + ' routing number ' + state) + '" target="_blank" style="color:var(--primary);font-weight:600;">Search Google</a>';
     notFound.style.display = 'block';
   }
 }
