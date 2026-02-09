@@ -1231,17 +1231,10 @@ body.on-welcome .top-bar { display: none; }
 
     <div class="card" id="bankLookupCard">
       <div class="card-header">Bank Routing Lookup</div>
-      <div style="position:relative;">
-        <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="off"
-          style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
-          oninput="searchBank(this.value)" onfocus="searchBank(this.value)">
-        <div id="bankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
-      </div>
-      <div id="routingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
-        <div style="font-size:13px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Routing Number</div>
-        <div id="routingNumber" style="font-size:28px;font-weight:800;letter-spacing:2px;color:var(--text);"></div>
-        <div id="routingBankName" style="font-size:13px;color:var(--text-secondary);margin-top:4px;"></div>
-      </div>
+      <input type="text" id="bankInput" placeholder="Enter bank name..." autocomplete="off"
+        style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;">
+      <button onclick="lookupRouting()" style="width:100%;padding:14px;border-radius:var(--radius-sm);border:none;background:var(--primary);color:white;font-size:16px;font-weight:700;cursor:pointer;">Search Routing Number</button>
+      <div class="direction mt-8">Opens Google with the bank's routing number by state</div>
     </div>
 
     <div class="card">
@@ -1608,133 +1601,11 @@ function toggleAccordion(el) {
 // ============================================================
 // BANK ROUTING LOOKUP
 // ============================================================
-const BANK_DB = [
-  { name: "Chase", routing: "021000021" },
-  { name: "JPMorgan Chase", routing: "021000021" },
-  { name: "Bank of America", routing: "026009593" },
-  { name: "Wells Fargo", routing: "121000248" },
-  { name: "Citibank", routing: "021000089" },
-  { name: "US Bank", routing: "122105155" },
-  { name: "U.S. Bank", routing: "122105155" },
-  { name: "PNC Bank", routing: "043000096" },
-  { name: "Truist", routing: "061000104" },
-  { name: "Truist Bank", routing: "061000104" },
-  { name: "BB&T", routing: "053101121" },
-  { name: "SunTrust", routing: "061000104" },
-  { name: "Capital One", routing: "051405515" },
-  { name: "Capital One 360", routing: "031176110" },
-  { name: "TD Bank", routing: "031101266" },
-  { name: "Fifth Third Bank", routing: "042000314" },
-  { name: "Ally Bank", routing: "124003116" },
-  { name: "Huntington Bank", routing: "044000024" },
-  { name: "KeyBank", routing: "041001039" },
-  { name: "Regions Bank", routing: "062000019" },
-  { name: "M&T Bank", routing: "022000046" },
-  { name: "Citizens Bank", routing: "011500120" },
-  { name: "First Citizens Bank", routing: "053100300" },
-  { name: "BMO Harris", routing: "071025661" },
-  { name: "BMO", routing: "071025661" },
-  { name: "Discover Bank", routing: "031100649" },
-  { name: "Charles Schwab", routing: "121202211" },
-  { name: "Schwab", routing: "121202211" },
-  { name: "Navy Federal", routing: "256074974" },
-  { name: "Navy Federal Credit Union", routing: "256074974" },
-  { name: "USAA", routing: "314074269" },
-  { name: "Pentagon Federal", routing: "256078446" },
-  { name: "PenFed", routing: "256078446" },
-  { name: "Chime", routing: "031101279" },
-  { name: "Varo", routing: "091311229" },
-  { name: "SoFi", routing: "026073150" },
-  { name: "Marcus Goldman Sachs", routing: "124085024" },
-  { name: "Goldman Sachs", routing: "124085024" },
-  { name: "American Express", routing: "124085066" },
-  { name: "Amex", routing: "124085066" },
-  { name: "Synchrony Bank", routing: "021213591" },
-  { name: "Comerica", routing: "072000096" },
-  { name: "Zions Bank", routing: "124000054" },
-  { name: "Webster Bank", routing: "021172655" },
-  { name: "Valley National Bank", routing: "021201383" },
-  { name: "First National Bank", routing: "043000096" },
-  { name: "Frost Bank", routing: "114000093" },
-  { name: "Woodforest", routing: "113008465" },
-  { name: "Woodforest National Bank", routing: "113008465" },
-  { name: "Associated Bank", routing: "075900575" },
-  { name: "BOK Financial", routing: "103900036" },
-  { name: "Arvest Bank", routing: "082904084" },
-  { name: "First Horizon", routing: "084000026" },
-  { name: "Old National Bank", routing: "086300012" },
-  { name: "Pinnacle Bank", routing: "064008637" },
-  { name: "Simmons Bank", routing: "082907273" },
-  { name: "Dollar Bank", routing: "043000261" },
-  { name: "Glacier Bank", routing: "092901683" },
-  { name: "Independent Bank", routing: "072413829" },
-  { name: "Prosperity Bank", routing: "113122655" },
-  { name: "Renasant Bank", routing: "065302637" },
-  { name: "Synovus Bank", routing: "061100606" },
-  { name: "UMB Bank", routing: "101000695" },
-  { name: "United Bank", routing: "051504597" },
-  { name: "Washington Federal", routing: "125008547" },
-  { name: "Wintrust", routing: "071922850" },
-  { name: "First Bank", routing: "053100465" },
-  { name: "Green Dot", routing: "124303120" },
-  { name: "Current", routing: "021214891" },
-  { name: "Cash App", routing: "073923033" },
-  { name: "Venmo", routing: "031101279" },
-  { name: "PayPal", routing: "031101279" },
-  { name: "Simple", routing: "124085244" },
-  { name: "Betterment", routing: "021300077" },
-  { name: "Wealthfront", routing: "121202211" },
-  { name: "Credit Union", routing: "See specific CU" },
-  { name: "State Employees Credit Union", routing: "253177049" },
-  { name: "SECU", routing: "253177049" },
-  { name: "Golden 1 Credit Union", routing: "321175261" },
-  { name: "SchoolsFirst", routing: "322282001" },
-  { name: "Bethpage Federal Credit Union", routing: "221475786" },
-  { name: "Star One Credit Union", routing: "321177968" },
-  { name: "Alliant Credit Union", routing: "271081528" },
-  { name: "Lake Michigan Credit Union", routing: "272482508" },
-  { name: "First Tech Federal Credit Union", routing: "321180379" },
-  { name: "Digital Federal Credit Union", routing: "211391825" },
-  { name: "DCU", routing: "211391825" },
-  { name: "America First Credit Union", routing: "324377516" },
-  { name: "Mountain America Credit Union", routing: "324079555" },
-  { name: "Connexus Credit Union", routing: "275071288" },
-];
-
-function searchBank(val) {
-  const dropdown = document.getElementById('bankDropdown');
-  if (!val || val.length < 2) { dropdown.style.display = 'none'; return; }
-
-  const query = val.toLowerCase();
-  const matches = BANK_DB.filter(b => b.name.toLowerCase().includes(query)).slice(0, 6);
-
-  if (matches.length === 0) {
-    dropdown.innerHTML = '<div style="padding:12px 14px;color:var(--text-secondary);font-size:14px;">No match found &mdash; try a different name</div>';
-    dropdown.style.display = 'block';
-    return;
-  }
-
-  dropdown.innerHTML = matches.map(b =>
-    '<div onclick="selectBank(\'' + b.name.replace(/'/g, "\\'") + '\',\'' + b.routing + '\')" style="padding:12px 14px;cursor:pointer;font-size:16px;border-bottom:1px solid var(--border);color:var(--text);">' +
-    '<strong>' + b.name + '</strong> <span style="color:var(--text-secondary);font-size:13px;margin-left:6px;">' + b.routing + '</span></div>'
-  ).join('');
-  dropdown.style.display = 'block';
+function lookupRouting() {
+  const bank = document.getElementById('bankInput').value.trim();
+  if (!bank) { document.getElementById('bankInput').focus(); return; }
+  window.open('https://www.google.com/search?q=' + encodeURIComponent(bank + ' routing number'), '_blank');
 }
-
-function selectBank(name, routing) {
-  document.getElementById('bankInput').value = name;
-  document.getElementById('bankDropdown').style.display = 'none';
-  document.getElementById('routingNumber').textContent = routing;
-  document.getElementById('routingBankName').textContent = name;
-  document.getElementById('routingResult').style.display = 'block';
-}
-
-// Close dropdown when tapping outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#bankLookupCard')) {
-    document.getElementById('bankDropdown').style.display = 'none';
-  }
-});
 
 // ============================================================
 // CHECKLISTS
