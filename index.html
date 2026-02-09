@@ -1231,10 +1231,23 @@ body.on-welcome .top-bar { display: none; }
 
     <div class="card" id="bankLookupCard">
       <div class="card-header">Bank Routing Lookup</div>
-      <input type="text" id="bankInput" placeholder="Enter bank name..." autocomplete="off"
-        style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;">
-      <button onclick="lookupRouting()" style="width:100%;padding:14px;border-radius:var(--radius-sm);border:none;background:var(--primary);color:white;font-size:16px;font-weight:700;cursor:pointer;">Search Routing Number</button>
-      <div class="direction mt-8">Opens Google with the bank's routing number by state</div>
+      <select id="stateSelect" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;-webkit-appearance:none;appearance:none;">
+        <option value="">Select State...</option>
+      </select>
+      <div style="position:relative;">
+        <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="off"
+          style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
+          oninput="searchBank(this.value)" onfocus="searchBank(this.value)">
+        <div id="bankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
+      </div>
+      <div id="routingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
+        <div style="font-size:13px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Routing Number</div>
+        <div id="routingNumber" style="font-size:28px;font-weight:800;letter-spacing:2px;color:var(--text);"></div>
+        <div id="routingBankName" style="font-size:13px;color:var(--text-secondary);margin-top:4px;"></div>
+      </div>
+      <div id="routingNotFound" style="display:none;margin-top:14px;padding:14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);text-align:center;font-size:14px;color:var(--text);">
+        Bank not found in database. <a id="googleFallback" href="#" target="_blank" style="color:var(--primary);font-weight:600;">Search Google</a>
+      </div>
     </div>
 
     <div class="card">
@@ -1381,6 +1394,7 @@ body.on-welcome .top-bar { display: none; }
   <button class="nav-btn primary" id="nextBtn" onclick="nextSection()">Next &rarr;</button>
 </div>
 
+<script src="banks.js"></script>
 <script>
 // ============================================================
 // CONFIGURATION
@@ -1601,11 +1615,85 @@ function toggleAccordion(el) {
 // ============================================================
 // BANK ROUTING LOOKUP
 // ============================================================
-function lookupRouting() {
-  const bank = document.getElementById('bankInput').value.trim();
-  if (!bank) { document.getElementById('bankInput').focus(); return; }
-  window.open('https://www.google.com/search?q=' + encodeURIComponent(bank + ' routing number'), '_blank');
+const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
+const STATE_NAMES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"Washington DC"};
+
+// Bank data loaded from external script
+let BANK_DATA = {};
+
+function initStateSelect() {
+  const sel = document.getElementById('stateSelect');
+  US_STATES.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = STATE_NAMES[s] + ' (' + s + ')';
+    sel.appendChild(opt);
+  });
 }
+
+function searchBank(val) {
+  const dropdown = document.getElementById('bankDropdown');
+  if (!val || val.length < 2) { dropdown.style.display = 'none'; return; }
+  const query = val.toLowerCase();
+  const bankNames = Object.keys(BANK_DATA);
+  const matches = bankNames.filter(b => b.toLowerCase().includes(query)).slice(0, 6);
+  if (matches.length === 0) {
+    dropdown.innerHTML = '<div style="padding:12px 14px;color:var(--text-secondary);font-size:14px;">No match &mdash; try another name</div>';
+    dropdown.style.display = 'block';
+    return;
+  }
+  dropdown.innerHTML = matches.map(b =>
+    '<div onclick="selectBank(\'' + b.replace(/'/g,"\\'") + '\')" style="padding:12px 14px;cursor:pointer;font-size:16px;border-bottom:1px solid var(--border);color:var(--text);"><strong>' + b + '</strong></div>'
+  ).join('');
+  dropdown.style.display = 'block';
+}
+
+function selectBank(name) {
+  document.getElementById('bankInput').value = name;
+  document.getElementById('bankDropdown').style.display = 'none';
+  const state = document.getElementById('stateSelect').value;
+  const entry = BANK_DATA[name];
+  const notFound = document.getElementById('routingNotFound');
+  const result = document.getElementById('routingResult');
+  if (!entry) { result.style.display='none'; notFound.style.display='none'; return; }
+  let routing = null;
+  if (typeof entry === 'string') {
+    routing = entry;
+  } else if (state && entry[state]) {
+    routing = entry[state];
+  } else if (state && entry['ALL']) {
+    routing = entry['ALL'];
+  } else if (!state) {
+    result.style.display='none';
+    notFound.style.display='none';
+    alert('Please select a state first');
+    document.getElementById('stateSelect').focus();
+    return;
+  }
+  if (routing) {
+    document.getElementById('routingNumber').textContent = routing;
+    document.getElementById('routingBankName').textContent = name + (state ? ' (' + state + ')' : '');
+    result.style.display = 'block';
+    notFound.style.display = 'none';
+  } else {
+    result.style.display = 'none';
+    document.getElementById('googleFallback').href = 'https://www.google.com/search?q=' + encodeURIComponent(name + ' routing number ' + (state || ''));
+    notFound.style.display = 'block';
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#bankLookupCard')) {
+    document.getElementById('bankDropdown').style.display = 'none';
+  }
+});
+
+document.getElementById('stateSelect').addEventListener('change', () => {
+  const bankVal = document.getElementById('bankInput').value.trim();
+  if (bankVal && BANK_DATA[bankVal]) selectBank(bankVal);
+});
+
+initStateSelect();
 
 // ============================================================
 // CHECKLISTS
