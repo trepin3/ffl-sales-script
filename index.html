@@ -119,6 +119,7 @@ body {
   background: var(--border);
   transition: background 0.4s ease;
   position: relative;
+  cursor: pointer;
 }
 .progress-segment.active { background: var(--primary); }
 .progress-segment.completed { background: var(--success); }
@@ -147,12 +148,15 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.3px;
   font-weight: 600;
-  opacity: 0.5;
-  transition: opacity 0.3s;
+  opacity: 0.7;
+  transition: opacity 0.3s, color 0.3s;
   cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
 }
+.stage-label:active { opacity: 1; }
 .stage-label.active { opacity: 1; color: var(--primary); }
-.stage-label.completed { opacity: 0.8; color: var(--success); }
+.stage-label.completed { opacity: 0.9; color: var(--success); }
 
 /* MAIN CONTENT */
 .main-content {
@@ -1442,6 +1446,7 @@ function buildProgressBar() {
     const seg = document.createElement('div');
     seg.className = 'progress-segment';
     seg.id = 'prog-' + i;
+    seg.onclick = () => { goToStage(i); };
     bar.appendChild(seg);
 
     const lbl = document.createElement('div');
