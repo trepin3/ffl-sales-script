@@ -693,6 +693,68 @@ body.on-welcome .top-bar { display: none; }
   margin-bottom: 16px;
 }
 
+/* COVERAGE TOGGLE BUTTONS */
+.coverage-toggle-group {
+  display: flex;
+  gap: 10px;
+  margin: 4px 0 16px;
+}
+
+.coverage-toggle {
+  flex: 1;
+  padding: 14px 10px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: -0.2px;
+}
+.coverage-toggle:active { transform: scale(0.97); }
+.coverage-toggle.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+/* SCRIPT CHOICE SELECTOR */
+.script-choice-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 16px;
+}
+
+.script-choice {
+  flex: 1;
+  padding: 16px 10px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.script-choice:active { transform: scale(0.97); }
+.script-choice.active {
+  border-color: var(--primary);
+  background: rgba(0,113,227,0.08);
+}
+
+.script-choice-icon { font-size: 26px; margin-bottom: 5px; }
+
+.script-choice-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.script-choice.active .script-choice-label { color: var(--primary); }
+
 /* RESPONSIVE */
 @media (min-width: 768px) {
   .main-content { padding: 24px; }
@@ -705,7 +767,10 @@ body.on-welcome .top-bar { display: none; }
 <!-- TOP BAR -->
 <div class="top-bar" id="topBar">
   <div class="top-bar-row">
-    <h1 id="currentStageTitle">Intro</h1>
+    <div>
+      <h1 id="currentStageTitle">Intro</h1>
+      <div id="scriptTypeBadge" style="font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;"></div>
+    </div>
     <div class="top-bar-actions">
       <button class="icon-btn" onclick="toggleNotes()" title="Call Notes">&#128221;</button>
       <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode" id="themeBtn">&#127769;</button>
@@ -726,6 +791,16 @@ body.on-welcome .top-bar { display: none; }
       <h1>FFL Script</h1>
       <p>Your dynamic call guide. Follow the flow, handle objections, close more deals.</p>
       <input type="text" class="prospect-input" id="prospectNameInput" placeholder="Prospect's First Name" autocomplete="off">
+      <div class="script-choice-group">
+        <div class="script-choice active" id="choice-veterans" onclick="chooseScript('veterans')">
+          <div class="script-choice-icon">🎖️</div>
+          <div class="script-choice-label">Veterans Script</div>
+        </div>
+        <div class="script-choice" id="choice-aged" onclick="chooseScript('aged')">
+          <div class="script-choice-icon">📋</div>
+          <div class="script-choice-label">Aged Leads Script</div>
+        </div>
+      </div>
       <button class="start-btn" onclick="startCall()">Start Call</button>
     </div>
   </div>
@@ -797,6 +872,74 @@ body.on-welcome .top-bar { display: none; }
     </div>
 
     <div class="coaching-tip">Pause after "Does that make sense?" &mdash; let them confirm. Don't rush past it.</div>
+  </div>
+
+  <!-- AGED LEADS SECTION 1: INTRO -->
+  <div class="script-section" id="aged-sec-intro">
+    <span class="stage-badge">Stage 1 of 10</span>
+    <div class="section-title">Intro</div>
+    <div class="section-subtitle">Open the call and establish context</div>
+
+    <div class="card">
+      <div class="card-header">Opening Line</div>
+      <div class="script-text">
+        Hey <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>.
+        <br><br>
+        Hey <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, what's going on here? This is ______ getting back to you.
+        <br><br>
+        I got a request from your file from a little while ago. It looks like you either recently just took on some life insurance or you were looking into getting it done. I don't know if any of my guys or girls reached out to you yet.
+      </div>
+      <div class="direction mt-8"><em>[Wait for response]</em></div>
+    </div>
+
+    <div class="coaching-tip">Stay casual and warm — you're "getting back to them," not cold calling. Match their energy from the first word.</div>
+
+    <div class="coverage-toggle-group">
+      <button class="coverage-toggle" id="aged-btn-has" onclick="showAgedCoverage('has')">Has Coverage</button>
+      <button class="coverage-toggle" id="aged-btn-no" onclick="showAgedCoverage('no')">No Coverage</button>
+    </div>
+
+    <div id="aged-has-coverage" style="display:none;">
+      <div class="card">
+        <div class="card-header">If They Already Have Coverage</div>
+        <div class="script-text">
+          Okay, great. You already got that covered? Nice.
+          <br><br>
+          And then as far as you know, which one of our carriers did you go with? Do you know who that was? Maybe Mutual, Americo, Ethos, one of our other carriers?
+        </div>
+        <div class="direction mt-8"><em>[Wait for answer]</em></div>
+        <div class="script-text mt-12">
+          You went with <span class="fill-field" data-field="carrier" onclick="editField(this)">Carrier</span>? OK, great. And then the only reason they had me calling, I'm guessing, is because of either one or two things.
+          <br><br>
+          Let me ask you though, did they put you with <span class="fill-field" data-field="carrier" onclick="editField(this)">Carrier</span> first because you have a lot of health stuff going on or what was the main reason?
+        </div>
+        <div class="direction mt-8"><em>[Wait for answer]</em></div>
+        <div class="script-text mt-12">
+          Oh, you don't have a lot of health stuff going on? OK, great.
+          <br><br>
+          So let me see here. So as far as it goes, did they just show you <span class="fill-field" data-field="carrier" onclick="editField(this)">Carrier</span> only? Okay.
+          <br><br>
+          Okay, now I see why they had me calling. So my job's pretty simple. I'm pretty much just an underwriter as far as directing you as far as coverage goes, that you have, making sure you have the best thing possible when it comes to coverage.
+          <br><br>
+          My job is to make sure you're not overpaying for the coverage, or you're not getting enough coverage, find out which way it was for you. But it looks like on your file, then you're just not getting enough coverage for what you're paying for. So my job today would be pretty simple to go over what you have, make sure that you have enough coverage for what you're paying for. Make sure you're not overpaying, okay?
+        </div>
+      </div>
+      <div class="coaching-tip">The goal here is to position yourself as the expert reviewer — not a new salesperson. You're here to audit and fix, not sell from scratch.</div>
+    </div>
+
+    <div id="aged-no-coverage" style="display:none;">
+      <div class="card">
+        <div class="card-header">If They Don't Have Coverage Yet</div>
+        <div class="script-text">
+          OK no worries, that's actually why I'm calling. My job is pretty simple &mdash; just so you know who I am, I'm a broker for all the veterans in the state so I work with every top rated company out there, so I can do all the shopping around for you. Does that make sense?
+          <br><br>
+          <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, I'm going to text you my business card so that way you can put a face to the name and have my NPN number. With that number that's how you can look me up if you like too. Let me know when you got that.
+          <br><br>
+          So I'm just going to ask you some simple health questions just to see what company will be the best fit for you &rarr;
+        </div>
+      </div>
+      <div class="coaching-tip">Pause after "Does that make sense?" &mdash; let them confirm. Don't rush past it.</div>
+    </div>
   </div>
 
   <!-- SECTION 2: HEALTH QUESTIONS -->
@@ -1407,7 +1550,7 @@ body.on-welcome .top-bar { display: none; }
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const STAGES = [
+const VETERANS_STAGES = [
   { id: 'sec-intro', label: 'Intro', title: 'Intro' },
   { id: 'sec-health', label: 'Health', title: 'Health Questions' },
   { id: 'sec-needs', label: 'Needs', title: 'Needs Analysis' },
@@ -1420,9 +1563,25 @@ const STAGES = [
   { id: 'sec-close', label: 'Close', title: 'Close & Recap' },
 ];
 
+const AGED_STAGES = [
+  { id: 'aged-sec-intro', label: 'Intro', title: 'Intro' },
+  { id: 'sec-health', label: 'Health', title: 'Health Questions' },
+  { id: 'sec-needs', label: 'Needs', title: 'Needs Analysis' },
+  { id: 'sec-finances', label: 'Finance', title: 'Occupation & Finances' },
+  { id: 'sec-product', label: 'Product', title: 'Product Explanation' },
+  { id: 'sec-quote', label: 'Quote', title: 'Quote & Pitch' },
+  { id: 'sec-info', label: 'Info', title: 'Collect Info' },
+  { id: 'sec-social', label: 'DL/SSN', title: 'DL & Social' },
+  { id: 'sec-bank', label: 'Bank', title: 'Bank Info' },
+  { id: 'sec-close', label: 'Close', title: 'Close & Recap' },
+];
+
+let STAGES = VETERANS_STAGES;
+
 let currentStage = -1; // -1 = welcome
 let fieldData = {};
 let activeFieldEl = null;
+let selectedScript = 'veterans';
 
 // ============================================================
 // INIT
@@ -1461,13 +1620,22 @@ function buildProgressBar() {
 // ============================================================
 // NAVIGATION
 // ============================================================
+function chooseScript(type) {
+  selectedScript = type;
+  document.querySelectorAll('.script-choice').forEach(c => c.classList.remove('active'));
+  document.getElementById('choice-' + type).classList.add('active');
+}
+
 function startCall() {
   const nameInput = document.getElementById('prospectNameInput');
   const name = nameInput.value.trim() || 'Prospect';
   fieldData['name'] = name;
+  STAGES = selectedScript === 'aged' ? AGED_STAGES : VETERANS_STAGES;
+  buildProgressBar();
   updateAllFields();
   document.body.classList.remove('on-welcome');
   document.getElementById('welcome').classList.remove('active');
+  document.getElementById('scriptTypeBadge').textContent = selectedScript === 'aged' ? 'Aged Leads' : 'Veterans';
   goToStage(0);
 }
 
@@ -1540,6 +1708,18 @@ function resetCall() {
   // Clear notes
   document.getElementById('notesArea').value = '';
   saveNotes();
+
+  // Reset aged leads coverage toggle
+  document.getElementById('aged-has-coverage').style.display = 'none';
+  document.getElementById('aged-no-coverage').style.display = 'none';
+  document.getElementById('aged-btn-has').classList.remove('active');
+  document.getElementById('aged-btn-no').classList.remove('active');
+
+  // Reset script choice UI
+  selectedScript = 'veterans';
+  document.querySelectorAll('.script-choice').forEach(c => c.classList.remove('active'));
+  document.getElementById('choice-veterans').classList.add('active');
+  document.getElementById('scriptTypeBadge').textContent = '';
 }
 
 // ============================================================
@@ -1558,6 +1738,7 @@ const FIELD_LABELS = {
   termYears: "Term Length (years)",
   beneficiary: "Beneficiary Name",
   birthState: "State of Birth",
+  carrier: "Insurance Carrier",
 };
 
 function editField(el) {
@@ -1613,6 +1794,16 @@ document.addEventListener('keydown', (e) => {
     closeAllModals();
   }
 });
+
+// ============================================================
+// AGED LEADS COVERAGE TOGGLE
+// ============================================================
+function showAgedCoverage(type) {
+  document.getElementById('aged-has-coverage').style.display = type === 'has' ? 'block' : 'none';
+  document.getElementById('aged-no-coverage').style.display = type === 'no' ? 'block' : 'none';
+  document.getElementById('aged-btn-has').classList.toggle('active', type === 'has');
+  document.getElementById('aged-btn-no').classList.toggle('active', type === 'no');
+}
 
 // ============================================================
 // OBJECTION ACCORDIONS
