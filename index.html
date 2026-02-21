@@ -760,6 +760,77 @@ body.on-welcome .top-bar { display: none; }
   .main-content { padding: 24px; }
   .script-text { font-size: 18px; }
 }
+
+/* EDIT MODE */
+.pw-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.pw-modal.active { display: flex; }
+
+.edit-mode-banner {
+  display: none;
+  background: var(--warning);
+  color: #3a1f00;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-top: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+body.edit-mode .edit-mode-banner { display: flex; }
+
+.edit-banner-btn {
+  background: rgba(0,0,0,0.12);
+  border: none;
+  color: #3a1f00;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+body.edit-mode [contenteditable="true"] {
+  outline: 2px dashed var(--warning) !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+  cursor: text !important;
+  min-height: 1em;
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--primary) !important;
+  background: rgba(0,113,227,0.04) !important;
+}
+body.edit-mode .fill-field {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.gh-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+.gh-modal.active { display: flex; }
 </style>
 </head>
 <body class="on-welcome">
@@ -775,10 +846,15 @@ body.on-welcome .top-bar { display: none; }
       <button class="icon-btn" onclick="toggleNotes()" title="Call Notes">&#128221;</button>
       <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode" id="themeBtn">&#127769;</button>
       <button class="icon-btn" onclick="resetCall()" title="New Call">&#8635;</button>
+      <button class="icon-btn" id="editLockBtn" onclick="handleEditLock()" title="Edit Script">&#128274;</button>
     </div>
   </div>
   <div class="progress-container" id="progressBar"></div>
   <div class="stage-labels" id="stageLabels"></div>
+  <div class="edit-mode-banner" id="editBanner">
+    <span>&#9999;&#65039; Edit Mode &mdash; tap any outlined text to edit</span>
+    <button class="edit-banner-btn" onclick="exportScript()">&#11015; Export HTML</button>
+  </div>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -1590,6 +1666,7 @@ function init() {
   buildProgressBar();
   loadTheme();
   loadNotes();
+  loadSavedEdits();
   // Focus name input
   document.getElementById('prospectNameInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') startCall();
@@ -1742,6 +1819,7 @@ const FIELD_LABELS = {
 };
 
 function editField(el) {
+  if (editModeActive) return;
   event.stopPropagation();
   activeFieldEl = el;
   const field = el.dataset.field;
@@ -1789,6 +1867,9 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && document.getElementById('inputModal').classList.contains('active')) {
     confirmInput();
   }
+  if (e.key === 'Enter' && document.getElementById('pwModal').classList.contains('active')) {
+    submitPwModal();
+  }
   if (e.key === 'Escape') {
     closeInput();
     closeAllModals();
@@ -1809,6 +1890,7 @@ function showAgedCoverage(type) {
 // OBJECTION ACCORDIONS
 // ============================================================
 function toggleAccordion(el) {
+  if (editModeActive) return;
   el.classList.toggle('expanded');
 }
 
@@ -1998,10 +2080,313 @@ function loadNotes() {
 document.getElementById('notesArea')?.addEventListener('input', saveNotes);
 
 // ============================================================
+// EDIT MODE & PASSWORD
+// ============================================================
+const EDITABLE_SELECTOR = '.card-header, .coaching-tip, .rebuttal, .section-title, .section-subtitle, .direction, .checklist-text, .checklist-sub, .script-text, .objection-accordion-trigger > span:not(.obj-arrow)';
+let editModeActive = false;
+let pwModalMode = '';
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function handleEditLock() {
+  if (editModeActive) {
+    exitEditMode();
+    return;
+  }
+  const hasHash = !!localStorage.getItem('ffl-edit-pw-hash');
+  pwModalMode = hasHash ? 'unlock' : 'setup';
+  document.getElementById('pwLabel').textContent = hasHash ? 'Enter edit password' : 'Create an edit password';
+  document.getElementById('pwConfirmRow').style.display = hasHash ? 'none' : 'block';
+  document.getElementById('pwField').value = '';
+  document.getElementById('pwConfirmField').value = '';
+  document.getElementById('pwError').style.display = 'none';
+  document.getElementById('pwModal').classList.add('active');
+  setTimeout(() => document.getElementById('pwField').focus(), 100);
+}
+
+function closePwModal() {
+  document.getElementById('pwModal').classList.remove('active');
+}
+
+async function submitPwModal() {
+  const pw = document.getElementById('pwField').value;
+  const errEl = document.getElementById('pwError');
+  errEl.style.display = 'none';
+  if (!pw) {
+    errEl.textContent = 'Please enter a password.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (pwModalMode === 'setup') {
+    const confirm = document.getElementById('pwConfirmField').value;
+    if (pw !== confirm) {
+      errEl.textContent = 'Passwords do not match.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (pw.length < 4) {
+      errEl.textContent = 'Password must be at least 4 characters.';
+      errEl.style.display = 'block';
+      return;
+    }
+    localStorage.setItem('ffl-edit-pw-hash', await sha256(pw));
+    closePwModal();
+    enterEditMode();
+  } else {
+    const hash = await sha256(pw);
+    if (hash === localStorage.getItem('ffl-edit-pw-hash')) {
+      closePwModal();
+      enterEditMode();
+    } else {
+      errEl.textContent = 'Incorrect password.';
+      errEl.style.display = 'block';
+      document.getElementById('pwField').value = '';
+      document.getElementById('pwField').focus();
+    }
+  }
+}
+
+function enterEditMode() {
+  editModeActive = true;
+  document.body.classList.add('edit-mode');
+  document.getElementById('editLockBtn').innerHTML = '&#128275;';
+  document.querySelectorAll(EDITABLE_SELECTOR).forEach(el => {
+    el.contentEditable = 'true';
+  });
+  updateExportBtn();
+}
+
+function exitEditMode() {
+  // Reset fill-fields to placeholders before saving so stale values aren't persisted
+  document.querySelectorAll('.fill-field').forEach(f => {
+    f.textContent = f.dataset.field.charAt(0).toUpperCase() + f.dataset.field.slice(1);
+    f.classList.remove('filled');
+  });
+  const edits = {};
+  document.querySelectorAll(EDITABLE_SELECTOR).forEach((el, i) => {
+    edits[i] = el.innerHTML;
+    el.contentEditable = 'false';
+  });
+  localStorage.setItem('ffl-script-edits', JSON.stringify(edits));
+  // Restore any live fill-field values for the current call
+  updateAllFields();
+  editModeActive = false;
+  document.body.classList.remove('edit-mode');
+  document.getElementById('editLockBtn').innerHTML = '&#128274;';
+}
+
+function loadSavedEdits() {
+  const edits = JSON.parse(localStorage.getItem('ffl-script-edits') || '{}');
+  if (!Object.keys(edits).length) return;
+  document.querySelectorAll(EDITABLE_SELECTOR).forEach((el, i) => {
+    if (edits[i] !== undefined) el.innerHTML = edits[i];
+  });
+}
+
+async function exportScript() {
+  if (editModeActive) exitEditMode();
+  const token = localStorage.getItem('ffl-github-token');
+  if (!token) {
+    showGitHubSetup();
+    return;
+  }
+  const btn = document.getElementById('exportBtn');
+  const original = btn.innerHTML;
+  btn.innerHTML = '&#9203; Pushing...';
+  btn.disabled = true;
+  try {
+    const owner = localStorage.getItem('ffl-github-owner') || 'trepin3';
+    const repo = localStorage.getItem('ffl-github-repo') || 'ffl-sales-script';
+    const path = localStorage.getItem('ffl-github-path') || 'index.html';
+    await doPush(token, owner, repo, path);
+    btn.innerHTML = '&#10003; Live in ~1 min!';
+    setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 3500);
+  } catch (err) {
+    btn.innerHTML = '&#10060; Failed';
+    btn.disabled = false;
+    setTimeout(() => { btn.innerHTML = original; }, 3000);
+    showGitHubSetup();
+    setTimeout(() => {
+      const ghErr = document.getElementById('ghError');
+      ghErr.textContent = err.message || 'Push failed. Check your settings.';
+      ghErr.style.display = 'block';
+    }, 50);
+  }
+}
+
+function closeAllModals() {
+  closePwModal();
+  closeGhModal();
+}
+
+window.addEventListener('beforeunload', () => {
+  if (editModeActive) exitEditMode();
+});
+
+// ============================================================
+// GITHUB PUSH
+// ============================================================
+function updateExportBtn() {
+  const btn = document.getElementById('exportBtn');
+  if (!btn) return;
+  const hasGH = !!localStorage.getItem('ffl-github-token');
+  btn.innerHTML = hasGH ? '&#128640; Push to GitHub' : '&#11015; Export HTML';
+}
+
+function showGitHubSetup() {
+  document.getElementById('ghToken').value = localStorage.getItem('ffl-github-token') || '';
+  document.getElementById('ghOwner').value = localStorage.getItem('ffl-github-owner') || 'trepin3';
+  document.getElementById('ghRepo').value = localStorage.getItem('ffl-github-repo') || 'ffl-sales-script';
+  document.getElementById('ghPath').value = localStorage.getItem('ffl-github-path') || 'index.html';
+  document.getElementById('ghError').style.display = 'none';
+  document.getElementById('ghStatus').style.display = 'none';
+  const btn = document.getElementById('ghSubmitBtn');
+  btn.textContent = 'Save & Push';
+  btn.disabled = false;
+  document.getElementById('ghModal').classList.add('active');
+}
+
+function closeGhModal() {
+  document.getElementById('ghModal').classList.remove('active');
+}
+
+function toBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+async function doPush(token, owner, repo, path) {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const headers = {
+    'Authorization': `token ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json',
+  };
+  const getRes = await fetch(apiUrl, { headers });
+  if (!getRes.ok) {
+    const err = await getRes.json().catch(() => ({}));
+    throw new Error(err.message || `Could not read file from GitHub (${getRes.status}). Check owner, repo, and path.`);
+  }
+  const fileData = await getRes.json();
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML
+    .replace(/ contenteditable="false"/g, '')
+    .replace(/ data-theme=""/g, '');
+  const putRes = await fetch(apiUrl, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: 'Update sales script via in-app editor',
+      content: toBase64(html),
+      sha: fileData.sha,
+    }),
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json().catch(() => ({}));
+    throw new Error(err.message || `Push failed (${putRes.status}). Token may need public_repo scope.`);
+  }
+}
+
+async function saveAndPush() {
+  const token = document.getElementById('ghToken').value.trim();
+  const owner = document.getElementById('ghOwner').value.trim();
+  const repo = document.getElementById('ghRepo').value.trim();
+  const path = document.getElementById('ghPath').value.trim();
+  const errEl = document.getElementById('ghError');
+  const statusEl = document.getElementById('ghStatus');
+  const btn = document.getElementById('ghSubmitBtn');
+  errEl.style.display = 'none';
+  statusEl.style.display = 'none';
+  if (!token || !owner || !repo || !path) {
+    errEl.textContent = 'All fields are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+  localStorage.setItem('ffl-github-token', token);
+  localStorage.setItem('ffl-github-owner', owner);
+  localStorage.setItem('ffl-github-repo', repo);
+  localStorage.setItem('ffl-github-path', path);
+  btn.textContent = 'Pushing...';
+  btn.disabled = true;
+  try {
+    await doPush(token, owner, repo, path);
+    statusEl.textContent = '✅ Pushed! Your site will be live in about 1 minute.';
+    statusEl.style.display = 'block';
+    btn.textContent = 'Done ✓';
+    updateExportBtn();
+    setTimeout(closeGhModal, 2500);
+  } catch (err) {
+    errEl.textContent = err.message || 'Push failed. Check your token and repo details.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Save & Push';
+    btn.disabled = false;
+  }
+}
+
+// ============================================================
 // INIT
 // ============================================================
 init();
 </script>
+
+<!-- GITHUB SETUP MODAL -->
+<div class="gh-modal" id="ghModal">
+  <div class="input-card" style="max-width:400px;width:100%;">
+    <div style="font-size:20px;font-weight:800;margin-bottom:6px;">&#128279; Connect to GitHub</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.5;">
+      Go to <strong>github.com/settings/tokens</strong> &rarr; Generate new token (classic) &rarr; check <strong>public_repo</strong> &rarr; copy and paste it below.
+    </p>
+    <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Personal Access Token</label>
+    <input type="password" id="ghToken" placeholder="ghp_..." autocomplete="off"
+      style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;">
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <div style="flex:1;">
+        <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Owner</label>
+        <input type="text" id="ghOwner" value="trepin3" autocomplete="off"
+          style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+      </div>
+      <div style="flex:1.5;">
+        <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Repository</label>
+        <input type="text" id="ghRepo" value="ffl-sales-script" autocomplete="off"
+          style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+      </div>
+    </div>
+    <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">File Path</label>
+    <input type="text" id="ghPath" value="index.html" autocomplete="off"
+      style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;">
+    <div id="ghError" style="display:none;color:var(--danger);font-size:13px;font-weight:600;margin-bottom:10px;padding:8px 12px;background:rgba(255,69,58,0.1);border-radius:8px;line-height:1.4;"></div>
+    <div id="ghStatus" style="display:none;color:var(--success);font-size:13px;font-weight:600;margin-bottom:10px;padding:8px 12px;background:rgba(48,209,88,0.1);border-radius:8px;"></div>
+    <div class="input-actions">
+      <button style="background:var(--input-bg);color:var(--text);flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="closeGhModal()">Cancel</button>
+      <button id="ghSubmitBtn" style="background:var(--primary);color:white;flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="saveAndPush()">Save &amp; Push</button>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="pw-modal" id="pwModal">
+  <div class="input-card">
+    <label id="pwLabel" style="font-size:14px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;">Enter edit password</label>
+    <input type="password" id="pwField" autocomplete="new-password" placeholder="Password"
+      style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:18px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+    <div id="pwConfirmRow" style="display:none;margin-top:10px;">
+      <label style="font-size:14px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;">Confirm password</label>
+      <input type="password" id="pwConfirmField" autocomplete="new-password" placeholder="Confirm password"
+        style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:18px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+    </div>
+    <div id="pwError" style="display:none;color:var(--danger);font-size:13px;font-weight:600;margin-top:8px;"></div>
+    <div class="input-actions">
+      <button style="background:var(--input-bg);color:var(--text);flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="closePwModal()">Cancel</button>
+      <button style="background:var(--primary);color:white;flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="submitPwModal()">Submit</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
