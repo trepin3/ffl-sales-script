@@ -2085,6 +2085,7 @@ document.getElementById('notesArea')?.addEventListener('input', saveNotes);
 const EDITABLE_SELECTOR = '.card-header, .coaching-tip, .rebuttal, .section-title, .section-subtitle, .direction, .checklist-text, .checklist-sub, .script-text, .objection-accordion-trigger > span:not(.obj-arrow)';
 let editModeActive = false;
 let pwModalMode = '';
+let EDIT_PW_HASH = ''; // injected by push — do not edit manually
 
 async function sha256(msg) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
@@ -2096,7 +2097,8 @@ function handleEditLock() {
     exitEditMode();
     return;
   }
-  const hasHash = !!localStorage.getItem('ffl-edit-pw-hash');
+  const effectiveHash = EDIT_PW_HASH || localStorage.getItem('ffl-edit-pw-hash') || '';
+  const hasHash = !!effectiveHash;
   pwModalMode = hasHash ? 'unlock' : 'setup';
   document.getElementById('pwLabel').textContent = hasHash ? 'Enter edit password' : 'Create an edit password';
   document.getElementById('pwConfirmRow').style.display = hasHash ? 'none' : 'block';
@@ -2132,12 +2134,15 @@ async function submitPwModal() {
       errEl.style.display = 'block';
       return;
     }
-    localStorage.setItem('ffl-edit-pw-hash', await sha256(pw));
+    const h = await sha256(pw);
+    localStorage.setItem('ffl-edit-pw-hash', h);
+    EDIT_PW_HASH = h;
     closePwModal();
     enterEditMode();
   } else {
     const hash = await sha256(pw);
-    if (hash === localStorage.getItem('ffl-edit-pw-hash')) {
+    const effectiveHash = EDIT_PW_HASH || localStorage.getItem('ffl-edit-pw-hash') || '';
+    if (hash === effectiveHash) {
       closePwModal();
       enterEditMode();
     } else {
@@ -2275,9 +2280,12 @@ async function doPush(token, owner, repo, path) {
     throw new Error(err.message || `Could not read file from GitHub (${getRes.status}). Check owner, repo, and path.`);
   }
   const fileData = await getRes.json();
-  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML
+  const currentHash = EDIT_PW_HASH || localStorage.getItem('ffl-edit-pw-hash') || '';
+  let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML
     .replace(/ contenteditable="false"/g, '')
     .replace(/ data-theme=""/g, '');
+  // Bake the password hash into the file so it survives localStorage being cleared
+  html = html.replace(/let EDIT_PW_HASH = '[^']*'/, `let EDIT_PW_HASH = '${currentHash}'`);
   const putRes = await fetch(apiUrl, {
     method: 'PUT',
     headers,
