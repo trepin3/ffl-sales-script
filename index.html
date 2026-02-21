@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -833,27 +832,27 @@ body.edit-mode .fill-field {
 .gh-modal.active { display: flex; }
 </style>
 </head>
-<body class="on-welcome">
+<body class="">
 
 <!-- TOP BAR -->
 <div class="top-bar" id="topBar">
   <div class="top-bar-row">
     <div>
       <h1 id="currentStageTitle">Intro</h1>
-      <div id="scriptTypeBadge" style="font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;"></div>
+      <div id="scriptTypeBadge" style="font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;">Aged Leads</div>
     </div>
     <div class="top-bar-actions">
-      <button class="icon-btn" onclick="toggleNotes()" title="Call Notes">&#128221;</button>
-      <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode" id="themeBtn">&#127769;</button>
-      <button class="icon-btn" onclick="resetCall()" title="New Call">&#8635;</button>
-      <button class="icon-btn" id="editLockBtn" onclick="handleEditLock()" title="Edit Script">&#128274;</button>
+      <button class="icon-btn" onclick="toggleNotes()" title="Call Notes">📝</button>
+      <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode" id="themeBtn">🌙</button>
+      <button class="icon-btn" onclick="resetCall()" title="New Call">↻</button>
+      <button class="icon-btn" id="editLockBtn" onclick="handleEditLock()" title="Edit Script">🔒</button>
     </div>
   </div>
-  <div class="progress-container" id="progressBar"></div>
-  <div class="stage-labels" id="stageLabels"></div>
+  <div class="progress-container" id="progressBar"><div class="progress-segment active" id="prog-0"></div><div class="progress-segment" id="prog-1"></div><div class="progress-segment" id="prog-2"></div><div class="progress-segment" id="prog-3"></div><div class="progress-segment" id="prog-4"></div><div class="progress-segment" id="prog-5"></div><div class="progress-segment" id="prog-6"></div><div class="progress-segment" id="prog-7"></div><div class="progress-segment" id="prog-8"></div><div class="progress-segment" id="prog-9"></div></div>
+  <div class="stage-labels" id="stageLabels"><div class="stage-label active" id="lbl-0">Intro</div><div class="stage-label" id="lbl-1">Health</div><div class="stage-label" id="lbl-2">Needs</div><div class="stage-label" id="lbl-3">Finance</div><div class="stage-label" id="lbl-4">Product</div><div class="stage-label" id="lbl-5">Quote</div><div class="stage-label" id="lbl-6">Info</div><div class="stage-label" id="lbl-7">DL/SSN</div><div class="stage-label" id="lbl-8">Bank</div><div class="stage-label" id="lbl-9">Close</div></div>
   <div class="edit-mode-banner" id="editBanner">
-    <span>&#9999;&#65039; Edit Mode &mdash; tap any outlined text to edit</span>
-    <button class="edit-banner-btn" onclick="exportScript()">&#11015; Export HTML</button>
+    <span>✏️ Edit Mode — tap any outlined text to edit</span>
+    <button class="edit-banner-btn" onclick="exportScript()">⬇ Export HTML</button>
   </div>
 </div>
 
@@ -861,18 +860,18 @@ body.edit-mode .fill-field {
 <div class="main-content">
 
   <!-- WELCOME -->
-  <div class="script-section active" id="welcome">
+  <div class="script-section" id="welcome">
     <div class="welcome-screen">
-      <div class="welcome-logo">&#9889;</div>
+      <div class="welcome-logo">⚡</div>
       <h1>FFL Script</h1>
       <p>Your dynamic call guide. Follow the flow, handle objections, close more deals.</p>
       <input type="text" class="prospect-input" id="prospectNameInput" placeholder="Prospect's First Name" autocomplete="off">
       <div class="script-choice-group">
-        <div class="script-choice active" id="choice-veterans" onclick="chooseScript('veterans')">
+        <div class="script-choice" id="choice-veterans" onclick="chooseScript('veterans')">
           <div class="script-choice-icon">🎖️</div>
           <div class="script-choice-label">Veterans Script</div>
         </div>
-        <div class="script-choice" id="choice-aged" onclick="chooseScript('aged')">
+        <div class="script-choice active" id="choice-aged" onclick="chooseScript('aged')">
           <div class="script-choice-icon">📋</div>
           <div class="script-choice-label">Aged Leads Script</div>
         </div>
@@ -890,7 +889,7 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Opening Line</div>
       <div class="script-text">
-        <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>? <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, this is _____. I was getting back to you on the request you made with us &rarr; it looks like you put your email as <span class="fill-field" data-field="email" onclick="editField(this)">email</span>? Yeah, this is for the veteran benefits &mdash; were you looking for the life insurance that builds cash value or leaving money to the family?
+        <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>? <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>, this is _____. I was getting back to you on the request you made with us → it looks like you put your email as <span class="fill-field" data-field="email" onclick="editField(this)">Email</span>? Yeah, this is for the veteran benefits — were you looking for the life insurance that builds cash value or leaving money to the family?
       </div>
     </div>
 
@@ -899,28 +898,28 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Confirm DOB</div>
       <div class="script-text">
-        Okay awesome, I got your Date of Birth down as <span class="fill-field" data-field="dob" onclick="editField(this)">DOB</span>?
+        Okay awesome, I got your Date of Birth down as <span class="fill-field" data-field="dob" onclick="editField(this)">Dob</span>?
       </div>
     </div>
 
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"Who is this? Do you work for the VA?"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">I'm glad you asked my friend. We partner with the VA, because back in the day, you guys only used to have one life insurance policy through SGLI and VGLI. Now we work with all veteran life insurance partner programs to make sure we can shop them all, and put your family in the best position. Does that make sense? <em>Continue to script &rarr;</em></div>
-        <div class="coaching-tip">Say "my friend" warmly. You're not defensive &mdash; you're proud of what you do. Confidence kills suspicion.</div>
+        <div class="rebuttal">I'm glad you asked my friend. We partner with the VA, because back in the day, you guys only used to have one life insurance policy through SGLI and VGLI. Now we work with all veteran life insurance partner programs to make sure we can shop them all, and put your family in the best position. Does that make sense? <em>Continue to script →</em></div>
+        <div class="coaching-tip">Say "my friend" warmly. You're not defensive — you're proud of what you do. Confidence kills suspicion.</div>
       </div>
     </div>
 
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"I'm busy, call me back later"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">I get it, you probably have your hands full &mdash; before I let you go, do you mind if I ask you one quick question to make sure it's even worth me calling you back later? Okay, just wanted to make sure we point you in the right direction &mdash; what were you hoping to accomplish when you filled this out? <em>Continue to script &rarr;</em></div>
+        <div class="rebuttal">I get it, you probably have your hands full — before I let you go, do you mind if I ask you one quick question to make sure it's even worth me calling you back later? Okay, just wanted to make sure we point you in the right direction — what were you hoping to accomplish when you filled this out? <em>Continue to script →</em></div>
         <div class="coaching-tip">Don't sound desperate. Sound like you're doing them a favor by saving them a callback. Quick and respectful wins here.</div>
       </div>
     </div>
@@ -928,30 +927,30 @@ body.edit-mode .fill-field {
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"Just tell me the price"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">Hey <span class="fill-field" data-field="name" onclick="editField(this);event.stopPropagation();">Name</span>, I knew I liked you, that makes my life easier &rarr; Straight to the point. So basically you're saying you don't care what it is you're buying &rarr; as long as the price aligns with your budget you're going to go with it no matter what &rarr; is that right? <em>(let them respond)</em><br><br>Gotcha, so you do actually want to go through the info to make sure that it makes sense? <em>Continue to script &rarr;</em></div>
-        <div class="coaching-tip">Use humor and a smile in your voice. You're flipping their objection into a reason to keep going. Pause and let them answer &mdash; they'll say "yeah, I want to know what it is."</div>
+        <div class="rebuttal">Hey <span class="fill-field filled" data-field="name" onclick="editField(this);event.stopPropagation();">Prospect</span>, I knew I liked you, that makes my life easier → Straight to the point. So basically you're saying you don't care what it is you're buying → as long as the price aligns with your budget you're going to go with it no matter what → is that right? <em>(let them respond)</em><br><br>Gotcha, so you do actually want to go through the info to make sure that it makes sense? <em>Continue to script →</em></div>
+        <div class="coaching-tip">Use humor and a smile in your voice. You're flipping their objection into a reason to keep going. Pause and let them answer — they'll say "yeah, I want to know what it is."</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">No Objection &mdash; Continue</div>
+      <div class="card-header">No Objection — Continue</div>
       <div class="script-text">
-        Okay, perfect &mdash; just so you know who I am, I'm a broker for all the veterans in the state so I work with every top rated company out there, so I can do all the shopping around for you. Does that make sense?
+        Okay, perfect — just so you know who I am, I'm a broker for all the veterans in the state so I work with every top rated company out there, so I can do all the shopping around for you. Does that make sense?
         <br><br>
-        <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, I'm going to text you my business card so that way you can put a face to the name and have my NPN number. With that number that's how you can look me up if you like too. Let me know when you got that.
+        <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>, I'm going to text you my business card so that way you can put a face to the name and have my NPN number. With that number that's how you can look me up if you like too. Let me know when you got that.
         <br><br>
-        So I'm just going to ask you some simple health questions just to see what company will be the best fit for you &rarr;
+        So I'm just going to ask you some simple health questions just to see what company will be the best fit for you →
       </div>
     </div>
 
-    <div class="coaching-tip">Pause after "Does that make sense?" &mdash; let them confirm. Don't rush past it.</div>
+    <div class="coaching-tip">Pause after "Does that make sense?" — let them confirm. Don't rush past it.</div>
   </div>
 
   <!-- AGED LEADS SECTION 1: INTRO -->
-  <div class="script-section" id="aged-sec-intro">
+  <div class="script-section active" id="aged-sec-intro">
     <span class="stage-badge">Stage 1 of 10</span>
     <div class="section-title">Intro</div>
     <div class="section-subtitle">Open the call and establish context</div>
@@ -959,28 +958,25 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Opening Line</div>
       <div class="script-text">
-        Hey <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>.
+        Hey <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>.
         <br><br>
-        Hey <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, what's going on here? This is ______ getting back to you.
-        <br><br>
-        I got a request from your file from a little while ago. It looks like you either recently just took on some life insurance or you were looking into getting it done. I don't know if anyone told you I was giving you a call.
-      </div>
-      <div class="direction mt-8"><em>[Wait for response]</em></div>
+        Hey <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>, what's going on here? This is ______ I'm calling because your case file came across my desk, it looks like you bought life insurance or were looking into it.
+        <br><br>Did anyone tell you i'd be calling?</div>
+      <div class="direction mt-8"><em>[Wait for response]</em><div><em>*That's exactly why I'm calling</em></div></div>
     </div>
 
     <div class="coaching-tip">Stay casual and warm — you're "getting back to them," not cold calling. Match their energy from the first word.</div>
 
     <div class="coverage-toggle-group">
       <button class="coverage-toggle" id="aged-btn-has" onclick="showAgedCoverage('has')">Has Coverage</button>
-      <button class="coverage-toggle" id="aged-btn-no" onclick="showAgedCoverage('no')">No Coverage</button>
+      <button class="coverage-toggle active" id="aged-btn-no" onclick="showAgedCoverage('no')">No Coverage</button>
     </div>
 
-    <div id="aged-has-coverage" style="display:none;">
+    <div id="aged-has-coverage" style="display: none;">
       <div class="card">
         <div class="card-header">If They Already Have Coverage</div>
         <div class="script-text">
-          Okay, great. You already got that covered? Nice.
-          <br><br>
+          That's exactly why I'm calling.<br><br>
           And then as far as you know, which one of our carriers did you go with? Do you know who that was? Maybe Mutual, Americo, Ethos, one of our other carriers?
         </div>
         <div class="direction mt-8"><em>[Wait for answer]</em></div>
@@ -1003,18 +999,18 @@ body.edit-mode .fill-field {
       <div class="coaching-tip">The goal here is to position yourself as the expert reviewer — not a new salesperson. You're here to audit and fix, not sell from scratch.</div>
     </div>
 
-    <div id="aged-no-coverage" style="display:none;">
+    <div id="aged-no-coverage" style="display: block;">
       <div class="card">
         <div class="card-header">If They Don't Have Coverage Yet</div>
         <div class="script-text">
-          OK no worries, that's actually why I'm calling. My job is pretty simple &mdash; just so you know who I am, I'm a broker for all the veterans in the state so I work with every top rated company out there, so I can do all the shopping around for you. Does that make sense?
+          OK no worries, that's exactly why I'm calling. My job is pretty simple — just so you know who I am, I'm a broker for all the veterans in the state so I work with every top rated company out there, so I can do all the shopping around for you. Does that make sense?
           <br><br>
-          <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, I'm going to text you my business card so that way you can put a face to the name and have my NPN number. With that number that's how you can look me up if you like too. Let me know when you got that.
+          <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>, I'm going to text you my business card so that way you can put a face to the name and have my NPN number. With that number that's how you can look me up if you like too. Let me know when you got that.
           <br><br>
-          So I'm just going to ask you some simple health questions just to see what company will be the best fit for you &rarr;
+          So I'm just going to ask you some simple health questions just to see what company will be the best fit for you →
         </div>
       </div>
-      <div class="coaching-tip">Pause after "Does that make sense?" &mdash; let them confirm. Don't rush past it.</div>
+      <div class="coaching-tip">Pause after "Does that make sense?" — let them confirm. Don't rush past it.</div>
     </div>
   </div>
 
@@ -1035,7 +1031,7 @@ body.edit-mode .fill-field {
         <li class="checklist-item" onclick="toggleCheck(this)">
           <div class="check-circle"></div>
           <div>
-            <div class="checklist-text">It looks like you are <span class="fill-field" data-field="age" onclick="editField(this);event.stopPropagation();">age</span> correct?</div>
+            <div class="checklist-text">It looks like you are <span class="fill-field" data-field="age" onclick="editField(this);event.stopPropagation();">Age</span> correct?</div>
             <div class="checklist-sub">Collect DOB</div>
           </div>
         </li>
@@ -1111,7 +1107,7 @@ body.edit-mode .fill-field {
         <li class="checklist-item" onclick="toggleCheck(this)">
           <div class="check-circle"></div>
           <div>
-            <div class="checklist-text">And what's a good height & weight for you?</div>
+            <div class="checklist-text">And what's a good height &amp; weight for you?</div>
           </div>
         </li>
       </ul>
@@ -1172,12 +1168,12 @@ body.edit-mode .fill-field {
   <!-- SECTION 4: OCCUPATION / FINANCES -->
   <div class="script-section" id="sec-finances">
     <span class="stage-badge">Stage 4 of 10</span>
-    <div class="section-title">Occupation & Finances</div>
+    <div class="section-title">Occupation &amp; Finances</div>
     <div class="section-subtitle">Understand their financial picture</div>
 
     <div class="card">
       <div class="script-text">
-        And are you still currently working, or fully retired &rarr; what does that look like?
+        And are you still currently working, or fully retired → what does that look like?
       </div>
     </div>
 
@@ -1214,19 +1210,19 @@ body.edit-mode .fill-field {
       <div class="card">
         <div class="card-header">Day One Coverage</div>
         <div class="script-text">
-          Now this is <strong>day one coverage</strong> &mdash; so you make one payment on this and you pass away the next day, your beneficiary is getting paid the full death benefit tax free.
+          Now this is <strong>day one coverage</strong> — so you make one payment on this and you pass away the next day, your beneficiary is getting paid the full death benefit tax free.
         </div>
       </div>
       <div class="card">
         <div class="card-header">Cash Value</div>
         <div class="script-text">
-          Then go ahead and write down <strong>cash value</strong>. So every whole life policy does come with a cash value and obviously this isn't going to make you rich like Bill Gates, but it will grow over time so if you needed an emergency fund, you'd be able to use some of the cash value that was built up within the policy over the years as a <strong>tax free loan</strong> that never has to be paid back. It just gets reduced from your death benefit when you pass away &rarr; So any questions on that at all?
+          Then go ahead and write down <strong>cash value</strong>. So every whole life policy does come with a cash value and obviously this isn't going to make you rich like Bill Gates, but it will grow over time so if you needed an emergency fund, you'd be able to use some of the cash value that was built up within the policy over the years as a <strong>tax free loan</strong> that never has to be paid back. It just gets reduced from your death benefit when you pass away → So any questions on that at all?
         </div>
       </div>
       <div class="card">
         <div class="card-header">Living Benefits</div>
         <div class="script-text">
-          Then go ahead and write down <strong>living benefits</strong> &mdash; so if you got critically, chronically, or terminally ill you actually have access to the death benefit while you're alive to cover medical expenses and loss of income. For example, if you get chronically ill the insurance company will pay you monthly so you can keep the bills running.
+          Then go ahead and write down <strong>living benefits</strong> — so if you got critically, chronically, or terminally ill you actually have access to the death benefit while you're alive to cover medical expenses and loss of income. For example, if you get chronically ill the insurance company will pay you monthly so you can keep the bills running.
         </div>
       </div>
     </div>
@@ -1236,13 +1232,13 @@ body.edit-mode .fill-field {
       <div class="card">
         <div class="card-header">Term Coverage</div>
         <div class="script-text">
-          OK so this coverage here is gonna cover you for <span class="fill-field" data-field="termYears" onclick="editField(this)">term years</span>. Now go ahead and write down <strong>level premium</strong> &rarr; So the price of it will never go up on you.
+          OK so this coverage here is gonna cover you for <span class="fill-field" data-field="termYears" onclick="editField(this)">TermYears</span>. Now go ahead and write down <strong>level premium</strong> → So the price of it will never go up on you.
         </div>
       </div>
       <div class="card">
         <div class="card-header">Living Benefits</div>
         <div class="script-text">
-          Now the other thing to write down is it does come with <strong>living benefits</strong> &mdash; so if you got critically, chronically, or terminally ill you have access to the death benefit while you're alive in order to cover medical expenses and loss of income.
+          Now the other thing to write down is it does come with <strong>living benefits</strong> — so if you got critically, chronically, or terminally ill you have access to the death benefit while you're alive in order to cover medical expenses and loss of income.
         </div>
       </div>
     </div>
@@ -1258,7 +1254,7 @@ body.edit-mode .fill-field {
       <div class="card">
         <div class="card-header">Cash Value</div>
         <div class="script-text">
-          Then go ahead and write down <strong>cash value</strong> for me. So what makes a IUL so unique is the cash value over time &mdash; in the next 3, 4, 5 years you're gonna have cash built up in the policy that you're able to take from the life insurance policy tax-free and never have to pay it back. It just gets reduced from your death benefit when you pass away.
+          Then go ahead and write down <strong>cash value</strong> for me. So what makes a IUL so unique is the cash value over time — in the next 3, 4, 5 years you're gonna have cash built up in the policy that you're able to take from the life insurance policy tax-free and never have to pay it back. It just gets reduced from your death benefit when you pass away.
         </div>
       </div>
       <div class="card">
@@ -1270,7 +1266,7 @@ body.edit-mode .fill-field {
       <div class="card">
         <div class="card-header">Simple Example (If Confused)</div>
         <div class="script-text">
-          For example, let's say you have a $300,000 IUL and you take out $10,000 cash that was built up within the policy to go buy yourself a new lawnmower &mdash; now when you pass away instead of the family getting $300,000 they're now going to get $290,000 in a death benefit. Does that make sense?
+          For example, let's say you have a $300,000 IUL and you take out $10,000 cash that was built up within the policy to go buy yourself a new lawnmower — now when you pass away instead of the family getting $300,000 they're now going to get $290,000 in a death benefit. Does that make sense?
         </div>
       </div>
     </div>
@@ -1281,7 +1277,7 @@ body.edit-mode .fill-field {
   <!-- SECTION 6: QUOTE & PITCH -->
   <div class="script-section" id="sec-quote">
     <span class="stage-badge">Stage 6 of 10</span>
-    <div class="section-title">Quote & Pitch</div>
+    <div class="section-title">Quote &amp; Pitch</div>
     <div class="section-subtitle">Pull up your quote tool and present options</div>
 
     <div class="card">
@@ -1294,14 +1290,14 @@ body.edit-mode .fill-field {
     </div>
 
     <div class="card">
-      <div class="card-header">If YES &mdash; They've Heard of Them</div>
+      <div class="card-header">If YES — They've Heard of Them</div>
       <div class="script-text">
         Perfect, they've been around over 100+ years and they are A+ rated financially so they are not going anywhere.
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">If NO &mdash; Haven't Heard of Them</div>
+      <div class="card-header">If NO — Haven't Heard of Them</div>
       <div class="script-text">
         No worries, they've been around over 100+ years and they are A+ rated financially so they're not going anywhere.
       </div>
@@ -1310,9 +1306,9 @@ body.edit-mode .fill-field {
     <div class="card" style="border-left: 4px solid var(--primary);">
       <div class="card-header">Pitch the Numbers</div>
       <div class="script-text">
-        Okay <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, so go ahead and write down <span class="fill-field" data-field="coverage1" onclick="editField(this)">Coverage 1</span> and that is going to be for <span class="fill-field" data-field="price1" onclick="editField(this)">Price 1</span> a month.
+        Okay <span class="fill-field filled" data-field="name" onclick="editField(this)">Prospect</span>, so go ahead and write down <span class="fill-field" data-field="coverage1" onclick="editField(this)">Coverage1</span> and that is going to be for <span class="fill-field" data-field="price1" onclick="editField(this)">Price1</span> a month.
         <br><br>
-        And the second option is going to be <span class="fill-field" data-field="coverage2" onclick="editField(this)">Coverage 2</span> for <span class="fill-field" data-field="price2" onclick="editField(this)">Price 2</span>.
+        And the second option is going to be <span class="fill-field" data-field="coverage2" onclick="editField(this)">Coverage2</span> for <span class="fill-field" data-field="price2" onclick="editField(this)">Price2</span>.
         <br><br>
         <strong>Out of those options, if you get approved, which one would provide the best coverage for your needs?</strong>
       </div>
@@ -1321,11 +1317,11 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Confirm Comfort</div>
       <div class="script-text">
-        Okay awesome. If you do get approved, I want to make sure that one is going to be comfortable for you each and every month. I don't want to give you a policy that would be uncomfortable and it falls off and you lose all money you put in &mdash; so is that for sure comfortable?
+        Okay awesome. If you do get approved, I want to make sure that one is going to be comfortable for you each and every month. I don't want to give you a policy that would be uncomfortable and it falls off and you lose all money you put in — so is that for sure comfortable?
       </div>
     </div>
 
-    <div class="coaching-tip">Always give two options &mdash; this is a "which one" close, not a "yes or no." Let them pick between options rather than deciding to buy or not.</div>
+    <div class="coaching-tip">Always give two options — this is a "which one" close, not a "yes or no." Let them pick between options rather than deciding to buy or not.</div>
   </div>
 
   <!-- SECTION 7: COLLECT INFO -->
@@ -1350,11 +1346,11 @@ body.edit-mode .fill-field {
         </li>
         <li class="checklist-item" onclick="toggleCheck(this)">
           <div class="check-circle"></div>
-          <div class="checklist-text">Then that email on file &mdash; they will also send you a digital copy as well.</div>
+          <div class="checklist-text">Then that email on file — they will also send you a digital copy as well.</div>
         </li>
         <li class="checklist-item" onclick="toggleCheck(this)">
           <div class="check-circle"></div>
-          <div class="checklist-text">Then were you born in the state of <span class="fill-field" data-field="birthState" onclick="editField(this);event.stopPropagation();">State</span>?</div>
+          <div class="checklist-text">Then were you born in the state of <span class="fill-field" data-field="birthState" onclick="editField(this);event.stopPropagation();">BirthState</span>?</div>
         </li>
         <li class="checklist-item" onclick="toggleCheck(this)">
           <div class="check-circle"></div>
@@ -1366,7 +1362,7 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Beneficiary Explanation</div>
       <div class="script-text">
-        Okay awesome, so once you get approved the biggest thing I do is make sure your beneficiary knows exactly what you got set up &mdash; so the company name, policy number, how much coverage you have, and the phone number to the company. So that way they know exactly who to call to get the money because the last thing I would want to happen is you pay for a policy and your beneficiary doesn't know how to get the money.
+        Okay awesome, so once you get approved the biggest thing I do is make sure your beneficiary knows exactly what you got set up — so the company name, policy number, how much coverage you have, and the phone number to the company. So that way they know exactly who to call to get the money because the last thing I would want to happen is you pay for a policy and your beneficiary doesn't know how to get the money.
       </div>
     </div>
   </div>
@@ -1374,13 +1370,13 @@ body.edit-mode .fill-field {
   <!-- SECTION 8: DL & SOCIAL -->
   <div class="script-section" id="sec-social">
     <span class="stage-badge">Stage 8 of 10</span>
-    <div class="section-title">DL & Social</div>
+    <div class="section-title">DL &amp; Social</div>
     <div class="section-subtitle">Collect sensitive info with confidence</div>
 
     <div class="card">
       <div class="card-header">Driver's License</div>
       <div class="script-text">
-        Okay the first thing they will need here is the driver's license number &mdash; do you have that number memorized or do you need a second to grab it?
+        Okay the first thing they will need here is the driver's license number — do you have that number memorized or do you need a second to grab it?
       </div>
     </div>
 
@@ -1394,40 +1390,40 @@ body.edit-mode .fill-field {
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"Why do you need that?"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">I don't need it, <strong>they</strong> do &rarr; So I'm ready for that when you are.</div>
-        <div class="coaching-tip">Short and calm. Emphasize "they" not "I." You're just the messenger. Then go silent &mdash; let the pause do the work.</div>
+        <div class="rebuttal">I don't need it, <strong>they</strong> do → So I'm ready for that when you are.</div>
+        <div class="coaching-tip">Short and calm. Emphasize "they" not "I." You're just the messenger. Then go silent — let the pause do the work.</div>
       </div>
     </div>
 
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"I don't feel comfortable giving that out"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
         <div class="rebuttal">Yeah, so in order to run the prescription check as well as background check they require a social because everything that you've done in the past two years is tied to that number. So I'm ready for that when you are.</div>
-        <div class="coaching-tip">Give them a logical reason. "Prescription check" and "background check" make it sound routine and required &mdash; not optional. End with confidence, not apology.</div>
+        <div class="coaching-tip">Give them a logical reason. "Prescription check" and "background check" make it sound routine and required — not optional. End with confidence, not apology.</div>
       </div>
     </div>
 
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"I'm still not giving that out"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
         <div class="rebuttal">Okay no worries, I've been doing this for a while, so I understand where you're coming from but I'm gonna go ahead and text you over this link. That's going to let you see my screen that way you can see what I'm doing here. But let me know when you got it. <em>(Send them the link through CrankWheel)</em></div>
-        <div class="coaching-tip">This is your last resort &mdash; don't jump here first. Screen sharing builds trust by giving them control. Send the link immediately, don't hesitate.</div>
+        <div class="coaching-tip">This is your last resort — don't jump here first. Screen sharing builds trust by giving them control. Send the link immediately, don't hesitate.</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">After Social &mdash; Lighten the Mood</div>
+      <div class="card-header">After Social — Lighten the Mood</div>
       <div class="script-text">
-        Ok and we already went over your health but you don't plan on doing any skydiving, boat racing or participating in a demolition derby in the next 2 years correct? <em>(joke &mdash; get them laughing)</em>
+        Ok and we already went over your health but you don't plan on doing any skydiving, boat racing or participating in a demolition derby in the next 2 years correct? <em>(joke — get them laughing)</em>
         <br><br>
         Awesome, and then for your beneficiary are you giving <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span> 100% of the payout?
         <br><br>
@@ -1455,16 +1451,12 @@ body.edit-mode .fill-field {
     <div class="card" id="bankLookupCard">
       <div class="card-header">Bank Routing Lookup</div>
       <div style="position:relative;">
-        <input type="text" id="stateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="state-lookup-x"
-          style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;"
-          oninput="searchState(this.value)" onfocus="searchState(this.value)">
+        <input type="text" id="stateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="state-lookup-x" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;" oninput="searchState(this.value)" onfocus="searchState(this.value)">
         <input type="hidden" id="stateSelect" value="">
         <div id="stateDropdown" style="display:none;position:absolute;left:0;right:0;top:calc(100% - 10px);background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:11;box-shadow:var(--shadow-lg);"></div>
       </div>
       <div style="position:relative;">
-        <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="bank-lookup-x"
-          style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
-          oninput="searchBank(this.value)" onfocus="searchBank(this.value)" onblur="setTimeout(lookupRouting,200)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('bankDropdown').style.display='none';lookupRouting();}">
+        <input type="text" id="bankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" name="bank-lookup-x" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;" oninput="searchBank(this.value)" onfocus="searchBank(this.value)" onblur="setTimeout(lookupRouting,200)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('bankDropdown').style.display='none';lookupRouting();}">
         <div id="bankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
       </div>
       <div id="routingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
@@ -1489,43 +1481,43 @@ body.edit-mode .fill-field {
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"I don't feel comfortable giving that out"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">Yeah, completely understand <span class="fill-field" data-field="name" onclick="editField(this);event.stopPropagation();">Name</span> &mdash; so the insurance company just wants to make sure that the bank is in your name and you're not El Chapo trying to commit insurance fraud or anything like that. So we could do one of two things &mdash; we could either set this out seven days to make sure that once you are approved you just let me know if you wanna keep it for that certain day, or we could just use a bank account that has no money in it. Bottom line is they do need a bank on file to make sure it's in your name.</div>
-        <div class="coaching-tip">The El Chapo joke breaks tension &mdash; deliver it with a laugh. Then give them two easy options so they feel in control. Both options still get you the bank info.</div>
+        <div class="rebuttal">Yeah, completely understand <span class="fill-field filled" data-field="name" onclick="editField(this);event.stopPropagation();">Prospect</span> — so the insurance company just wants to make sure that the bank is in your name and you're not El Chapo trying to commit insurance fraud or anything like that. So we could do one of two things — we could either set this out seven days to make sure that once you are approved you just let me know if you wanna keep it for that certain day, or we could just use a bank account that has no money in it. Bottom line is they do need a bank on file to make sure it's in your name.</div>
+        <div class="coaching-tip">The El Chapo joke breaks tension — deliver it with a laugh. Then give them two easy options so they feel in control. Both options still get you the bank info.</div>
       </div>
     </div>
 
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"I don't wanna start till I'm approved"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">Yeah, absolutely &mdash; it's not going to come out of your bank anyways until you are actually approved and if it did, you would just cancel the policy anyways, and then that affects my relationship with the carrier which I don't wanna put that at jeopardy.</div>
-        <div class="coaching-tip">Agree with them first &mdash; "yeah, absolutely" validates their concern. Then explain nothing happens until approval. They feel safe, you move forward.</div>
+        <div class="rebuttal">Yeah, absolutely — it's not going to come out of your bank anyways until you are actually approved and if it did, you would just cancel the policy anyways, and then that affects my relationship with the carrier which I don't wanna put that at jeopardy.</div>
+        <div class="coaching-tip">Agree with them first — "yeah, absolutely" validates their concern. Then explain nothing happens until approval. They feel safe, you move forward.</div>
       </div>
     </div>
 
     <div class="objection-accordion" onclick="toggleAccordion(this)">
       <button class="objection-accordion-trigger">
         <span>"I want to think about it"</span>
-        <span class="obj-arrow">&#9654;</span>
+        <span class="obj-arrow">▶</span>
       </button>
       <div class="objection-accordion-body">
-        <div class="rebuttal">Oh okay, I gotcha &mdash; so I'm guessing the monthly premium is just a little uncomfortable for you? <em>(yes)</em> Ok, I definitely wouldn't want to set this up if it's going to be uncomfortable for you. So what we can do is start lower and you can always shoot me a call down the road to upgrade.</div>
+        <div class="rebuttal">Oh okay, I gotcha — so I'm guessing the monthly premium is just a little uncomfortable for you? <em>(yes)</em> Ok, I definitely wouldn't want to set this up if it's going to be uncomfortable for you. So what we can do is start lower and you can always shoot me a call down the road to upgrade.</div>
         <div class="coaching-tip">"Think about it" almost always means price. Diagnose the real issue, then offer a lower option. A smaller sale is better than no sale. You can always upgrade them later.</div>
       </div>
     </div>
 
-    <div class="coaching-tip">If they hesitate, stay calm. Don't rush or sound nervous. Treat it as routine &mdash; because it is.</div>
+    <div class="coaching-tip">If they hesitate, stay calm. Don't rush or sound nervous. Treat it as routine — because it is.</div>
   </div>
 
   <!-- SECTION 10: CLOSE -->
   <div class="script-section" id="sec-close">
     <span class="stage-badge">Stage 10 of 10</span>
-    <div class="section-title">Close & Recap</div>
+    <div class="section-title">Close &amp; Recap</div>
     <div class="section-subtitle">Lock it down and set expectations</div>
 
     <div class="card" style="border-left: 4px solid var(--success);">
@@ -1544,7 +1536,7 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Recap Coverage</div>
       <div class="script-text">
-        Now, before we get off the phone I want to make sure you're fully aware of what this coverage is and how it works &rarr; So with that being said, <strong>to the best of your ability can you explain to me what we set up today for you and your family?</strong>
+        Now, before we get off the phone I want to make sure you're fully aware of what this coverage is and how it works → So with that being said, <strong>to the best of your ability can you explain to me what we set up today for you and your family?</strong>
       </div>
       <div class="direction mt-8">Let them explain it back to you. This cements their understanding and reduces cancellations.</div>
     </div>
@@ -1552,7 +1544,7 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Anti-Cancel Lock</div>
       <div class="script-text">
-        Perfect, I want to make sure you're not going to cancel, because the way the insurance company dictates whether I keep a job or not is how many times you guys cancel or if it goes into insufficient funds or overdrafts your bank account &mdash; so do you foresee yourself canceling this? Because I do not want to give you this life insurance coverage if you're going to cancel.
+        Perfect, I want to make sure you're not going to cancel, because the way the insurance company dictates whether I keep a job or not is how many times you guys cancel or if it goes into insufficient funds or overdrafts your bank account — so do you foresee yourself canceling this? Because I do not want to give you this life insurance coverage if you're going to cancel.
         <br><br>
         Perfect, because if you cancel it affects my relationship with the insurance companies and I'm not going to put that at jeopardy. I wouldn't want you to cancel this 3 months from now and lose all the money you put into this because I set you up with something that you couldn't afford.
       </div>
@@ -1561,7 +1553,7 @@ body.edit-mode .fill-field {
     <div class="card">
       <div class="card-header">Contact Protection</div>
       <div class="script-text">
-        Also please make sure to save me as a contact in your phone &rarr;
+        Also please make sure to save me as a contact in your phone →
         <br><br>
         Now if someone reaches out to you and it doesn't appear as _____, then you know not to give them any information in regards to your policy or life insurance in general. I will be the only one calling or reaching out to you with any information in regards to your policy moving forward here on out. Now if they keep bothering you or even if it's spam, send that number over to me and I'll get your number off that call list because as of right now I'll be your agent moving forward and I directly represent you and your family. Does that make sense?
       </div>
@@ -1581,10 +1573,10 @@ body.edit-mode .fill-field {
       </div>
     </div>
 
-    <div class="coaching-tip">The recap is critical for reducing chargebacks. If they can't explain it, they don't understand it &mdash; and they'll cancel.</div>
+    <div class="coaching-tip">The recap is critical for reducing chargebacks. If they can't explain it, they don't understand it — and they'll cancel.</div>
 
     <div class="card text-center" style="margin-top: 20px;">
-      <div style="font-size: 40px; margin-bottom: 12px;">&#127881;</div>
+      <div style="font-size: 40px; margin-bottom: 12px;">🎉</div>
       <div class="section-title" style="font-size: 22px;">Call Complete</div>
       <div class="text-secondary text-sm mt-8">Great work. Every call gets better.</div>
       <button class="start-btn mt-16" onclick="resetCall()" style="max-width: 200px; margin: 16px auto 0;">Start New Call</button>
@@ -1609,16 +1601,24 @@ body.edit-mode .fill-field {
 <!-- NOTES PANEL -->
 <div class="notes-overlay" id="notesOverlay" onclick="toggleNotes()"></div>
 <div class="notes-panel" id="notesPanel">
-  <button class="notes-close" onclick="toggleNotes()">&times;</button>
+  <button class="notes-close" onclick="toggleNotes()">×</button>
   <h2>Call Notes</h2>
   <p class="text-secondary text-sm mb-12">Notes are saved automatically for this session.</p>
-  <textarea id="notesArea" placeholder="Jot down key details here...&#10;&#10;- Smoker/Non-smoker:&#10;- Health issues:&#10;- Mortgage amount:&#10;- Monthly income:&#10;- Product chosen:&#10;- Coverage amount:&#10;- Notes:"></textarea>
+  <textarea id="notesArea" placeholder="Jot down key details here...
+
+- Smoker/Non-smoker:
+- Health issues:
+- Mortgage amount:
+- Monthly income:
+- Product chosen:
+- Coverage amount:
+- Notes:"></textarea>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav" id="bottomNav">
-  <button class="nav-btn secondary" id="prevBtn" onclick="prevSection()" disabled>&larr; Back</button>
-  <button class="nav-btn primary" id="nextBtn" onclick="nextSection()">Next &rarr;</button>
+  <button class="nav-btn secondary" id="prevBtn" onclick="prevSection()" disabled="">← Back</button>
+  <button class="nav-btn primary" id="nextBtn" onclick="nextSection()">Next →</button>
 </div>
 
 <script src="banks.js"></script>
@@ -2085,7 +2085,7 @@ document.getElementById('notesArea')?.addEventListener('input', saveNotes);
 const EDITABLE_SELECTOR = '.card-header, .coaching-tip, .rebuttal, .section-title, .section-subtitle, .direction, .checklist-text, .checklist-sub, .script-text, .objection-accordion-trigger > span:not(.obj-arrow)';
 let editModeActive = false;
 let pwModalMode = '';
-let EDIT_PW_HASH = ''; // injected by push — do not edit manually
+let EDIT_PW_HASH = '408704f49d09c31a7b608775f46f72c4671d6561a13026c97c610dca39344a83'; // injected by push — do not edit manually
 
 async function sha256(msg) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
@@ -2282,8 +2282,8 @@ async function doPush(token, owner, repo, path) {
   const fileData = await getRes.json();
   const currentHash = EDIT_PW_HASH || localStorage.getItem('ffl-edit-pw-hash') || '';
   let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML
-    .replace(/ contenteditable="false"/g, '')
-    .replace(/ data-theme=""/g, '');
+    .replace(//g, '')
+    .replace(//g, '');
   // Bake the password hash into the file so it survives localStorage being cleared
   html = html.replace(/let EDIT_PW_HASH = '[^']*'/, `let EDIT_PW_HASH = '${currentHash}'`);
   const putRes = await fetch(apiUrl, {
@@ -2344,35 +2344,31 @@ init();
 </script>
 
 <!-- GITHUB SETUP MODAL -->
-<div class="gh-modal" id="ghModal">
+<div class="gh-modal active" id="ghModal">
   <div class="input-card" style="max-width:400px;width:100%;">
-    <div style="font-size:20px;font-weight:800;margin-bottom:6px;">&#128279; Connect to GitHub</div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:6px;">🔗 Connect to GitHub</div>
     <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.5;">
-      Go to <strong>github.com/settings/tokens</strong> &rarr; Generate new token (classic) &rarr; check <strong>public_repo</strong> &rarr; copy and paste it below.
+      Go to <strong>github.com/settings/tokens</strong> → Generate new token (classic) → check <strong>public_repo</strong> → copy and paste it below.
     </p>
     <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Personal Access Token</label>
-    <input type="password" id="ghToken" placeholder="ghp_..." autocomplete="off"
-      style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;">
+    <input type="password" id="ghToken" placeholder="ghp_..." autocomplete="off" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;">
     <div style="display:flex;gap:8px;margin-bottom:12px;">
       <div style="flex:1;">
         <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Owner</label>
-        <input type="text" id="ghOwner" value="trepin3" autocomplete="off"
-          style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+        <input type="text" id="ghOwner" value="trepin3" autocomplete="off" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
       </div>
       <div style="flex:1.5;">
         <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Repository</label>
-        <input type="text" id="ghRepo" value="ffl-sales-script" autocomplete="off"
-          style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+        <input type="text" id="ghRepo" value="ffl-sales-script" autocomplete="off" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
       </div>
     </div>
     <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">File Path</label>
-    <input type="text" id="ghPath" value="index.html" autocomplete="off"
-      style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;">
+    <input type="text" id="ghPath" value="index.html" autocomplete="off" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s;">
     <div id="ghError" style="display:none;color:var(--danger);font-size:13px;font-weight:600;margin-bottom:10px;padding:8px 12px;background:rgba(255,69,58,0.1);border-radius:8px;line-height:1.4;"></div>
     <div id="ghStatus" style="display:none;color:var(--success);font-size:13px;font-weight:600;margin-bottom:10px;padding:8px 12px;background:rgba(48,209,88,0.1);border-radius:8px;"></div>
     <div class="input-actions">
       <button style="background:var(--input-bg);color:var(--text);flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="closeGhModal()">Cancel</button>
-      <button id="ghSubmitBtn" style="background:var(--primary);color:white;flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="saveAndPush()">Save &amp; Push</button>
+      <button id="ghSubmitBtn" style="background:var(--primary);color:white;flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="saveAndPush()" disabled="">Pushing...</button>
     </div>
   </div>
 </div>
@@ -2380,13 +2376,11 @@ init();
 <!-- PASSWORD MODAL -->
 <div class="pw-modal" id="pwModal">
   <div class="input-card">
-    <label id="pwLabel" style="font-size:14px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;">Enter edit password</label>
-    <input type="password" id="pwField" autocomplete="new-password" placeholder="Password"
-      style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:18px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
-    <div id="pwConfirmRow" style="display:none;margin-top:10px;">
+    <label id="pwLabel" style="font-size:14px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;">Create an edit password</label>
+    <input type="password" id="pwField" autocomplete="new-password" placeholder="Password" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:18px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+    <div id="pwConfirmRow" style="display: block; margin-top: 10px;">
       <label style="font-size:14px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;">Confirm password</label>
-      <input type="password" id="pwConfirmField" autocomplete="new-password" placeholder="Confirm password"
-        style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:18px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
+      <input type="password" id="pwConfirmField" autocomplete="new-password" placeholder="Confirm password" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:18px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;">
     </div>
     <div id="pwError" style="display:none;color:var(--danger);font-size:13px;font-weight:600;margin-top:8px;"></div>
     <div class="input-actions">
@@ -2396,5 +2390,6 @@ init();
   </div>
 </div>
 
-</body>
-</html>
+
+
+</body></html>
