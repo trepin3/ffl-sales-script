@@ -2570,7 +2570,15 @@ function exitEditMode() {
 function loadSavedEdits() {
   const edits = JSON.parse(localStorage.getItem('ffl-script-edits') || '{}');
   if (!Object.keys(edits).length) return;
-  document.querySelectorAll(EDITABLE_SELECTOR).forEach((el, i) => {
+  const els = document.querySelectorAll(EDITABLE_SELECTOR);
+  // If the saved edit count doesn't match the current element count, the HTML structure
+  // has changed (e.g. new script sections added) — discard stale edits to prevent corruption
+  const savedCount = Object.keys(edits).length;
+  if (savedCount !== els.length) {
+    localStorage.removeItem('ffl-script-edits');
+    return;
+  }
+  els.forEach((el, i) => {
     if (edits[i] !== undefined) el.innerHTML = edits[i];
   });
 }
