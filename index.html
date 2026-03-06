@@ -831,6 +831,34 @@ body.edit-mode .fill-field {
   overflow-y: auto;
 }
 .gh-modal.active { display: flex; }
+
+/* QUICK BANK MODAL */
+.qb-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 350;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.qb-modal.active { display: flex; }
+
+.qb-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.2s ease;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
 </style>
 </head>
 <body class="on-welcome">
@@ -843,6 +871,7 @@ body.edit-mode .fill-field {
       <div id="scriptTypeBadge" style="font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;"></div>
     </div>
     <div class="top-bar-actions">
+      <button class="icon-btn" onclick="openQbModal()" title="Bank Lookup">&#127974;</button>
       <button class="icon-btn" onclick="toggleNotes()" title="Call Notes">&#128221;</button>
       <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode" id="themeBtn">&#127769;</button>
       <button class="icon-btn" onclick="resetCall()" title="New Call">&#8635;</button>
@@ -876,8 +905,13 @@ body.edit-mode .fill-field {
           <div class="script-choice-icon">📋</div>
           <div class="script-choice-label">Aged Leads Script</div>
         </div>
+        <div class="script-choice" id="choice-fe" onclick="chooseScript('fe')">
+          <div class="script-choice-icon">🛡️</div>
+          <div class="script-choice-label">Final Expense</div>
+        </div>
       </div>
       <button class="start-btn" onclick="startCall()">Start Call</button>
+      <button class="start-btn mt-16" onclick="openQbModal()" style="background:var(--input-bg);color:var(--text);max-width:300px;">&#127974; Bank Routing Lookup</button>
     </div>
   </div>
 
@@ -1016,6 +1050,97 @@ body.edit-mode .fill-field {
       </div>
       <div class="coaching-tip">Pause after "Does that make sense?" &mdash; let them confirm. Don't rush past it.</div>
     </div>
+  </div>
+
+  <!-- FINAL EXPENSE SECTION 1: INTRO -->
+  <div class="script-section" id="fe-sec-intro">
+    <span class="stage-badge">Stage 1 of 10</span>
+    <div class="section-title">Intro</div>
+    <div class="section-subtitle">Open the call and establish who you are</div>
+
+    <div class="card">
+      <div class="card-header">Opening Line</div>
+      <div class="script-text">
+        Hey <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>.
+        <br><br>
+        How's it going, this is ______. I'm the underwriter assigned to help you out with your life insurance quote today. How are you doing?
+        <br><br>
+        That's good I see that you're in <span class="fill-field" data-field="cityState" onclick="editField(this)">City/State</span> is that right?
+        <br><br>
+        Yeah? Perfect, perfect.
+        <br><br>
+        And your email is <span class="fill-field" data-field="email" onclick="editField(this)">email</span>?
+        <br><br>
+        Yeah. Okay, now last thing just to make sure it's right. Your birthday is <span class="fill-field" data-field="dob" onclick="editField(this)">DOB</span>?
+      </div>
+    </div>
+
+    <div class="objection-accordion" onclick="toggleAccordion(this)">
+      <button class="objection-accordion-trigger">
+        <span>"How did you get my information?"</span>
+        <span class="obj-arrow">&#9654;</span>
+      </button>
+      <div class="objection-accordion-body">
+        <div class="rebuttal">It was a request you made, but my job is really just to go over it. I just need a couple minutes of your time, most people request this because they just don't want to leave that burden off to their kids or loved ones, you know?</div>
+        <div class="coaching-tip">Stay calm and confident. Don't get defensive &mdash; reframe it as their request and pivot to the emotional reason they reached out.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Identify Beneficiary</div>
+      <div class="script-text">
+        You know, who are you thinking about?
+        <br><br>
+        Your <span class="fill-field" data-field="relationship" onclick="editField(this)">Son/Daughter/Spouse</span>? What's their name?
+        <br><br>
+        So <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, have you ever talked to <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span>? I mean, you know <span class="fill-field" data-field="relationship" onclick="editField(this)">kids/husbands/wives</span>, they don't even like to talk about this stuff.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Concierge & Paperwork</div>
+      <div class="script-text">
+        Well, the beautiful part about our plans is that they all come with a 24/7 concierge that's going to make sure that <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span> doesn't have to do anything but make a phone call. Okay?
+        <br><br>
+        Because when this plan gets here, when you get the paperwork, you're going to be able to put if you want to be buried or cremated.
+        <br><br>
+        By the way, have you talked to <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span> about that? Do you prefer burial or cremation?
+      </div>
+    </div>
+
+    <div class="coverage-toggle-group">
+      <button class="coverage-toggle" id="fe-btn-cremation" onclick="showFeCoverage('cremation')">Cremation</button>
+      <button class="coverage-toggle" id="fe-btn-burial" onclick="showFeCoverage('burial')">Burial</button>
+    </div>
+
+    <div id="fe-cremation" style="display:none;">
+      <div class="card">
+        <div class="card-header">Cremation</div>
+        <div class="script-text">
+          So cremation costs around 2 to $8,000. It just depends on how much you have and how much you're going to leave behind as well and what you do.
+        </div>
+      </div>
+    </div>
+
+    <div id="fe-burial" style="display:none;">
+      <div class="card">
+        <div class="card-header">Burial</div>
+        <div class="script-text">
+          So burial costs around 10 to $20,000. It just depends on how much you have and how much you're going to leave behind as well and what you do.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Transition to Questions</div>
+      <div class="script-text">
+        So again, the plan is just going to do everything. They work with every funeral home in your area, every crematory. So do you understand that part?
+        <br><br>
+        Now the other part is just what you're going to leave behind for <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span>. So we're going to go over some options, but first I just want to ask you some questions and see how and what we can approve you for, okay?
+      </div>
+    </div>
+
+    <div class="coaching-tip">Let them feel the weight of why they called. The concierge pitch takes the burden off the beneficiary &mdash; that's the emotional hook.</div>
   </div>
 
   <!-- SECTION 2: HEALTH QUESTIONS -->
@@ -1652,6 +1777,19 @@ const AGED_STAGES = [
   { id: 'sec-close', label: 'Close', title: 'Close & Recap' },
 ];
 
+const FE_STAGES = [
+  { id: 'fe-sec-intro', label: 'Intro', title: 'Intro' },
+  { id: 'sec-health', label: 'Health', title: 'Health Questions' },
+  { id: 'sec-needs', label: 'Needs', title: 'Needs Analysis' },
+  { id: 'sec-finances', label: 'Finance', title: 'Occupation & Finances' },
+  { id: 'sec-product', label: 'Product', title: 'Product Explanation' },
+  { id: 'sec-quote', label: 'Quote', title: 'Quote & Pitch' },
+  { id: 'sec-info', label: 'Info', title: 'Collect Info' },
+  { id: 'sec-social', label: 'DL/SSN', title: 'DL & Social' },
+  { id: 'sec-bank', label: 'Bank', title: 'Bank Info' },
+  { id: 'sec-close', label: 'Close', title: 'Close & Recap' },
+];
+
 let STAGES = VETERANS_STAGES;
 
 let currentStage = -1; // -1 = welcome
@@ -1707,12 +1845,12 @@ function startCall() {
   const nameInput = document.getElementById('prospectNameInput');
   const name = nameInput.value.trim() || 'Prospect';
   fieldData['name'] = name;
-  STAGES = selectedScript === 'aged' ? AGED_STAGES : VETERANS_STAGES;
+  STAGES = selectedScript === 'aged' ? AGED_STAGES : selectedScript === 'fe' ? FE_STAGES : VETERANS_STAGES;
   buildProgressBar();
   updateAllFields();
   document.body.classList.remove('on-welcome');
   document.getElementById('welcome').classList.remove('active');
-  document.getElementById('scriptTypeBadge').textContent = selectedScript === 'aged' ? 'Aged Leads' : 'Veterans';
+  document.getElementById('scriptTypeBadge').textContent = selectedScript === 'aged' ? 'Aged Leads' : selectedScript === 'fe' ? 'Final Expense' : 'Veterans';
   goToStage(0);
 }
 
@@ -1792,6 +1930,12 @@ function resetCall() {
   document.getElementById('aged-btn-has').classList.remove('active');
   document.getElementById('aged-btn-no').classList.remove('active');
 
+  // Reset FE coverage toggle
+  document.getElementById('fe-cremation').style.display = 'none';
+  document.getElementById('fe-burial').style.display = 'none';
+  document.getElementById('fe-btn-cremation').classList.remove('active');
+  document.getElementById('fe-btn-burial').classList.remove('active');
+
   // Reset script choice UI
   selectedScript = 'veterans';
   document.querySelectorAll('.script-choice').forEach(c => c.classList.remove('active'));
@@ -1816,6 +1960,8 @@ const FIELD_LABELS = {
   beneficiary: "Beneficiary Name",
   birthState: "State of Birth",
   carrier: "Insurance Carrier",
+  cityState: "City or State",
+  relationship: "Relationship (Son/Daughter/Spouse)",
 };
 
 function editField(el) {
@@ -1872,6 +2018,7 @@ document.addEventListener('keydown', (e) => {
   }
   if (e.key === 'Escape') {
     closeInput();
+    closeQbModal();
     closeAllModals();
   }
 });
@@ -1884,6 +2031,116 @@ function showAgedCoverage(type) {
   document.getElementById('aged-no-coverage').style.display = type === 'no' ? 'block' : 'none';
   document.getElementById('aged-btn-has').classList.toggle('active', type === 'has');
   document.getElementById('aged-btn-no').classList.toggle('active', type === 'no');
+}
+
+// ============================================================
+// QUICK BANK LOOKUP MODAL
+// ============================================================
+function openQbModal() {
+  document.getElementById('qbModal').classList.add('active');
+}
+function closeQbModal() {
+  document.getElementById('qbModal').classList.remove('active');
+}
+
+function qbSearchState(val) {
+  const dropdown = document.getElementById('qbStateDropdown');
+  const query = val.toLowerCase().trim();
+  const matches = query.length === 0 ? US_STATES : US_STATES.filter(s =>
+    s.toLowerCase().includes(query) || STATE_NAMES[s].toLowerCase().includes(query)
+  );
+  if (matches.length === 0) { dropdown.style.display = 'none'; return; }
+  dropdown.innerHTML = matches.map(s =>
+    '<div onclick="qbPickState(\'' + s + '\')" style="padding:12px 14px;cursor:pointer;font-size:16px;border-bottom:1px solid var(--border);color:var(--text);">' + STATE_NAMES[s] + ' <span style="color:var(--text-secondary);">(' + s + ')</span></div>'
+  ).join('');
+  dropdown.style.display = 'block';
+}
+
+function qbPickState(code) {
+  document.getElementById('qbStateInput').value = STATE_NAMES[code] + ' (' + code + ')';
+  document.getElementById('qbStateSelect').value = code;
+  document.getElementById('qbStateDropdown').style.display = 'none';
+  if (document.getElementById('qbBankInput').value.trim()) qbLookupRouting();
+}
+
+function qbSearchBank(val) {
+  const dropdown = document.getElementById('qbBankDropdown');
+  if (!val || val.length < 2) { dropdown.style.display = 'none'; return; }
+  const query = val.toLowerCase();
+  const matches = Object.keys(BANK_DATA).filter(b => b.toLowerCase().includes(query)).slice(0, 6);
+  if (matches.length === 0) {
+    dropdown.innerHTML = '<div style="padding:12px 14px;color:var(--text-secondary);font-size:14px;">No match &mdash; try another name</div>';
+    dropdown.style.display = 'block';
+    return;
+  }
+  dropdown.innerHTML = matches.map(b =>
+    '<div onclick="qbSelectBank(\'' + b.replace(/'/g,"\\'") + '\')" style="padding:12px 14px;cursor:pointer;font-size:16px;border-bottom:1px solid var(--border);color:var(--text);"><strong>' + b + '</strong></div>'
+  ).join('');
+  dropdown.style.display = 'block';
+}
+
+function qbSelectBank(name) {
+  document.getElementById('qbBankInput').value = name;
+  document.getElementById('qbBankDropdown').style.display = 'none';
+  qbLookupRouting();
+}
+
+function qbLookupRouting() {
+  const bankVal = document.getElementById('qbBankInput').value.trim();
+  const state = document.getElementById('qbStateSelect').value;
+  const result = document.getElementById('qbRoutingResult');
+  const notFound = document.getElementById('qbRoutingNotFound');
+  result.style.display = 'none';
+  notFound.style.display = 'none';
+  if (!bankVal) return;
+  if (!state) {
+    alert('Please select a state first');
+    document.getElementById('qbStateInput').focus();
+    return;
+  }
+  const query = bankVal.toLowerCase();
+  let entry = null, matchedName = bankVal;
+  for (const key of Object.keys(BANK_DATA)) {
+    if (key.toLowerCase() === query || key.toLowerCase().includes(query) || query.includes(key.toLowerCase())) {
+      entry = BANK_DATA[key]; matchedName = key; break;
+    }
+  }
+  if (!entry) {
+    notFound.innerHTML = 'Bank not in database. <a href="https://www.google.com/search?q=' + encodeURIComponent(bankVal + ' routing number ' + state) + '" target="_blank" style="color:var(--primary);font-weight:600;">Search Google</a>';
+    notFound.style.display = 'block';
+    return;
+  }
+  let routing = null;
+  if (typeof entry === 'string') routing = entry;
+  else if (entry[state]) routing = entry[state];
+  else if (entry['ALL']) routing = entry['ALL'];
+  if (routing) {
+    document.getElementById('qbRoutingNumber').textContent = routing;
+    document.getElementById('qbRoutingBankName').textContent = matchedName + ' (' + state + ')';
+    result.style.display = 'block';
+  } else {
+    notFound.innerHTML = 'No routing number for <strong>' + matchedName + '</strong> in <strong>' + state + '</strong>. <a href="https://www.google.com/search?q=' + encodeURIComponent(matchedName + ' routing number ' + state) + '" target="_blank" style="color:var(--primary);font-weight:600;">Search Google</a>';
+    notFound.style.display = 'block';
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#qbModal .qb-card')) {
+    if (!e.target.closest('#qbStateInput') && !e.target.closest('#qbStateDropdown'))
+      document.getElementById('qbStateDropdown').style.display = 'none';
+    if (!e.target.closest('#qbBankInput') && !e.target.closest('#qbBankDropdown'))
+      document.getElementById('qbBankDropdown').style.display = 'none';
+  }
+});
+
+// ============================================================
+// FE COVERAGE TOGGLE
+// ============================================================
+function showFeCoverage(type) {
+  document.getElementById('fe-cremation').style.display = type === 'cremation' ? 'block' : 'none';
+  document.getElementById('fe-burial').style.display = type === 'burial' ? 'block' : 'none';
+  document.getElementById('fe-btn-cremation').classList.toggle('active', type === 'cremation');
+  document.getElementById('fe-btn-burial').classList.toggle('active', type === 'burial');
 }
 
 // ============================================================
@@ -2375,6 +2632,34 @@ init();
       <button style="background:var(--input-bg);color:var(--text);flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="closeGhModal()">Cancel</button>
       <button id="ghSubmitBtn" style="background:var(--primary);color:white;flex:1;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;" onclick="saveAndPush()">Save &amp; Push</button>
     </div>
+  </div>
+</div>
+
+<!-- QUICK BANK LOOKUP MODAL -->
+<div class="qb-modal" id="qbModal" onclick="if(event.target===this)closeQbModal()">
+  <div class="qb-card">
+    <button onclick="closeQbModal()" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-secondary);line-height:1;padding:0;">&times;</button>
+    <div style="font-size:20px;font-weight:800;margin-bottom:4px;">&#127974; Bank Routing Lookup</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.4;">Find any bank's routing number by state.</p>
+    <div style="position:relative;">
+      <input type="text" id="qbStateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
+        style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;"
+        oninput="qbSearchState(this.value)" onfocus="qbSearchState(this.value)">
+      <input type="hidden" id="qbStateSelect" value="">
+      <div id="qbStateDropdown" style="display:none;position:absolute;left:0;right:0;top:calc(100% - 10px);background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:11;box-shadow:var(--shadow-lg);"></div>
+    </div>
+    <div style="position:relative;">
+      <input type="text" id="qbBankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
+        style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
+        oninput="qbSearchBank(this.value)" onfocus="qbSearchBank(this.value)" onblur="setTimeout(qbLookupRouting,200)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('qbBankDropdown').style.display='none';qbLookupRouting();}">
+      <div id="qbBankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
+    </div>
+    <div id="qbRoutingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
+      <div style="font-size:13px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Routing Number</div>
+      <div id="qbRoutingNumber" style="font-size:28px;font-weight:800;letter-spacing:2px;color:var(--text);"></div>
+      <div id="qbRoutingBankName" style="font-size:13px;color:var(--text-secondary);margin-top:4px;"></div>
+    </div>
+    <div id="qbRoutingNotFound" style="display:none;margin-top:14px;padding:14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);text-align:center;font-size:14px;color:var(--text);"></div>
   </div>
 </div>
 
