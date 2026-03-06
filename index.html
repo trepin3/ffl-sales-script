@@ -830,7 +830,6 @@ body.edit-mode .fill-field {
 }
 .gh-modal.active { display: flex; }
 
-/* QUICK BANK MODAL */
 .qb-modal {
   display: none;
   position: fixed;
@@ -915,25 +914,25 @@ body.edit-mode .fill-field {
           <span style="display:inline-block;padding:6px 18px;background:var(--input-bg);color:var(--text-secondary);border:1.5px solid var(--border);border-radius:20px;font-size:14px;font-weight:800;letter-spacing:0.3px;">&#127974; Bank Routing Lookup &#127974;</span>
         </div>
         <div class="card">
-        <div style="position:relative;">
-          <input type="text" id="homeStateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
-            style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;"
-            oninput="homeSearchState(this.value)" onfocus="homeSearchState(this.value)">
-          <input type="hidden" id="homeStateSelect" value="">
-          <div id="homeStateDropdown" style="display:none;position:absolute;left:0;right:0;top:calc(100% - 10px);background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:11;box-shadow:var(--shadow-lg);"></div>
-        </div>
-        <div style="position:relative;">
-          <input type="text" id="homeBankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
-            style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
-            oninput="homeSearchBank(this.value)" onfocus="homeSearchBank(this.value)" onblur="setTimeout(homeLookupRouting,200)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('homeBankDropdown').style.display='none';homeLookupRouting();}">
-          <div id="homeBankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
-        </div>
-        <div id="homeRoutingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
-          <div style="font-size:13px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Routing Number</div>
-          <div id="homeRoutingNumber" style="font-size:28px;font-weight:800;letter-spacing:2px;color:var(--text);"></div>
-          <div id="homeRoutingBankName" style="font-size:13px;color:var(--text-secondary);margin-top:4px;"></div>
-        </div>
-        <div id="homeRoutingNotFound" style="display:none;margin-top:14px;padding:14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);text-align:center;font-size:14px;color:var(--text);"></div>
+          <div style="position:relative;">
+            <input type="text" id="homeStateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
+              style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;"
+              oninput="homeSearchState(this.value)" onfocus="homeSearchState(this.value)">
+            <input type="hidden" id="homeStateSelect" value="">
+            <div id="homeStateDropdown" style="display:none;position:absolute;left:0;right:0;top:calc(100% - 10px);background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:11;box-shadow:var(--shadow-lg);"></div>
+          </div>
+          <div style="position:relative;">
+            <input type="text" id="homeBankInput" placeholder="Type bank name..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
+              style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;"
+              oninput="homeSearchBank(this.value)" onfocus="homeSearchBank(this.value)" onblur="setTimeout(homeLookupRouting,200)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('homeBankDropdown').style.display='none';homeLookupRouting();}">
+            <div id="homeBankDropdown" style="display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-lg);"></div>
+          </div>
+          <div id="homeRoutingResult" style="display:none;margin-top:14px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;">
+            <div style="font-size:13px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Routing Number</div>
+            <div id="homeRoutingNumber" style="font-size:28px;font-weight:800;letter-spacing:2px;color:var(--text);"></div>
+            <div id="homeRoutingBankName" style="font-size:13px;color:var(--text-secondary);margin-top:4px;"></div>
+          </div>
+          <div id="homeRoutingNotFound" style="display:none;margin-top:14px;padding:14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);text-align:center;font-size:14px;color:var(--text);"></div>
         </div>
       </div>
     </div>
@@ -1122,7 +1121,7 @@ body.edit-mode .fill-field {
     </div>
 
     <div class="card">
-      <div class="card-header">Concierge & Paperwork</div>
+      <div class="card-header">Concierge &amp; Paperwork</div>
       <div class="script-text">
         Well, the beautiful part about our plans is that they all come with a 24/7 concierge that's going to make sure that <span class="fill-field" data-field="beneficiary" onclick="editField(this)">Beneficiary</span> doesn't have to do anything but make a phone call. Okay?
         <br><br>
@@ -2058,6 +2057,16 @@ function showAgedCoverage(type) {
 }
 
 // ============================================================
+// FE COVERAGE TOGGLE
+// ============================================================
+function showFeCoverage(type) {
+  document.getElementById('fe-cremation').style.display = type === 'cremation' ? 'block' : 'none';
+  document.getElementById('fe-burial').style.display = type === 'burial' ? 'block' : 'none';
+  document.getElementById('fe-btn-cremation').classList.toggle('active', type === 'cremation');
+  document.getElementById('fe-btn-burial').classList.toggle('active', type === 'burial');
+}
+
+// ============================================================
 // QUICK BANK LOOKUP MODAL
 // ============================================================
 function openQbModal() {
@@ -2253,16 +2262,6 @@ document.addEventListener('click', (e) => {
       document.getElementById('homeBankDropdown').style.display = 'none';
   }
 });
-
-// ============================================================
-// FE COVERAGE TOGGLE
-// ============================================================
-function showFeCoverage(type) {
-  document.getElementById('fe-cremation').style.display = type === 'cremation' ? 'block' : 'none';
-  document.getElementById('fe-burial').style.display = type === 'burial' ? 'block' : 'none';
-  document.getElementById('fe-btn-cremation').classList.toggle('active', type === 'cremation');
-  document.getElementById('fe-btn-burial').classList.toggle('active', type === 'burial');
-}
 
 // ============================================================
 // OBJECTION ACCORDIONS
