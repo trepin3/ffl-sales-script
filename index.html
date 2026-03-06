@@ -613,10 +613,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 70vh;
   text-align: center;
-  padding: 20px;
+  padding: 40px 20px 20px;
 }
 
 .welcome-logo {
@@ -911,13 +909,12 @@ body.edit-mode .fill-field {
         </div>
       </div>
       <button class="start-btn" onclick="startCall()">Start Call</button>
-    </div>
 
-    <div style="width:100%;max-width:400px;margin:14px auto 0;padding:0 16px;">
-      <div style="text-align:center;margin-bottom:10px;">
-        <span style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg,var(--primary),#00c7ff);color:white;border-radius:20px;font-size:14px;font-weight:800;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(0,113,227,0.25);">&#127974; Bank Routing Lookup &#127974;</span>
-      </div>
-      <div class="card">
+      <div style="width:100%;max-width:400px;margin:16px auto 0;">
+        <div style="text-align:center;margin-bottom:10px;">
+          <span style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg,var(--primary),#00c7ff);color:white;border-radius:20px;font-size:14px;font-weight:800;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(0,113,227,0.25);">&#127974; Bank Routing Lookup &#127974;</span>
+        </div>
+        <div class="card">
         <div style="position:relative;">
           <input type="text" id="homeStateInput" placeholder="Type or select state..." autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true"
             style="width:100%;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:17px;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:10px;"
@@ -937,6 +934,7 @@ body.edit-mode .fill-field {
           <div id="homeRoutingBankName" style="font-size:13px;color:var(--text-secondary);margin-top:4px;"></div>
         </div>
         <div id="homeRoutingNotFound" style="display:none;margin-top:14px;padding:14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);text-align:center;font-size:14px;color:var(--text);"></div>
+        </div>
       </div>
     </div>
   </div>
