@@ -2565,6 +2565,7 @@ function submitKepfePw() {
     kepfeUnlocked = true;
     document.getElementById('kepfeModal').classList.remove('active');
     chooseScript('kepfe');
+    startCall();
   } else {
     errEl.textContent = 'Incorrect password.';
     errEl.style.display = 'block';
