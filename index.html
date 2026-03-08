@@ -721,14 +721,17 @@ body.on-welcome .top-bar { display: none; }
 /* SCRIPT CHOICE SELECTOR */
 .script-choice-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   width: 100%;
-  max-width: 300px;
+  max-width: 460px;
   margin-bottom: 16px;
+  justify-content: center;
 }
 
 .script-choice {
-  flex: 1;
+  flex: 0 0 calc(25% - 9px);
+  min-width: 90px;
   padding: 16px 10px;
   border-radius: var(--radius);
   border: 2px solid var(--border);
