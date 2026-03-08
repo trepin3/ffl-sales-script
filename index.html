@@ -1489,7 +1489,9 @@ body.edit-mode .fill-field {
       <div class="script-text">
         <strong>Who is going to be in charge of your final arrangements?</strong>
       </div>
-      <div class="direction mt-8"><em>[Wait for response &mdash; write down name]</em></div>
+      <input type="text" id="kepfeBeneficiaryInput" placeholder="Enter beneficiary name..." autocomplete="off"
+        style="width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:16px;background:var(--input-bg);color:var(--text);outline:none;margin-top:10px;"
+        oninput="kepfeSetBeneficiary(this.value)">
     </div>
 
     <div class="card">
@@ -2385,6 +2387,9 @@ function resetCall() {
   document.getElementById('fe-needs-btn-burial').classList.remove('active');
   document.getElementById('fe-needs-btn-cremation').classList.remove('active');
 
+  // Reset Kep FE beneficiary input
+  document.getElementById('kepfeBeneficiaryInput').value = '';
+
   // Reset Kep FE coverage toggle
   document.getElementById('kepfe-cost-default').style.display = '';
   document.getElementById('kepfe-cost-cremation').style.display = 'none';
@@ -2583,6 +2588,14 @@ function applyKepfeNeedsChoice(type) {
 function kepfeNeedsSelect(type) {
   kepfeCoverageChoice = type;
   applyKepfeNeedsChoice(type);
+}
+
+function kepfeSetBeneficiary(val) {
+  const name = val.trim();
+  if (name) {
+    fieldData['beneficiary'] = name;
+  }
+  updateAllFields();
 }
 
 // ============================================================
