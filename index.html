@@ -1751,10 +1751,15 @@ body.edit-mode .fill-field {
       <div class="script-text">
         Now <span class="fill-field" data-field="name" onclick="editField(this)">Name</span>, before we go any further &mdash; when it comes to making decisions about your own final arrangements, is that something you handle yourself, or do you usually talk it over with someone?
       </div>
-      <div class="direction mt-8">
-        <em>If they say &ldquo;I decide myself&rdquo;:</em> &ldquo;Perfect, that&rsquo;s exactly what I like to hear. Let&rsquo;s keep going.&rdquo;
-        <br><br>
-        <em>If they mention spouse/kids:</em> &ldquo;I totally get that. Now, would they be the ones paying for the funeral if something happened? [Usually yes.] Then this is really about protecting <em>them</em>, right? Let&rsquo;s at least get the information so you can share it with them. Fair enough?&rdquo;
+      <div class="coverage-toggle-group">
+        <button class="coverage-toggle" id="dm-btn-self" onclick="showDmResponse('self')">Decision Maker</button>
+        <button class="coverage-toggle" id="dm-btn-others" onclick="showDmResponse('others')">Needs Others</button>
+      </div>
+      <div id="dm-response-self" style="display:none;margin-top:8px;">
+        <div class="script-text">&ldquo;Perfect, that&rsquo;s exactly what I like to hear. Let&rsquo;s keep going.&rdquo;</div>
+      </div>
+      <div id="dm-response-others" style="display:none;margin-top:8px;">
+        <div class="script-text">&ldquo;I totally get that. Now, would they be the ones paying for the funeral if something happened? <em>[Usually yes.]</em> Then this is really about protecting <em>them</em>, right? Let&rsquo;s at least get the information so you can share it with them. Fair enough?&rdquo;</div>
       </div>
       <div class="coaching-tip"><strong>Why early:</strong> This prevents &ldquo;I need to talk to my spouse/kids&rdquo; at the close. You&rsquo;re getting commitment now that <em>they</em> are the decision-maker, or reframing it as protecting the people they&rsquo;d consult.</div>
     </div>
@@ -2813,6 +2818,10 @@ function resetCall() {
   document.getElementById('kepfe-needs-btn-cremation').classList.remove('active');
 
   // Reset Kep FE V2 elements
+  document.getElementById('dm-response-self').style.display = 'none';
+  document.getElementById('dm-response-others').style.display = 'none';
+  document.getElementById('dm-btn-self').classList.remove('active');
+  document.getElementById('dm-btn-others').classList.remove('active');
   document.getElementById('kepfev2BeneficiaryInput').value = '';
   document.getElementById('kepfev2-cost-default').style.display = '';
   document.getElementById('kepfev2-cost-cremation').style.display = 'none';
@@ -3057,6 +3066,13 @@ function showKepfev2Coverage(type) {
   // Sync with V1 buttons too
   document.getElementById('kepfe-btn-cremation').classList.toggle('active', type === 'cremation');
   document.getElementById('kepfe-btn-burial').classList.toggle('active', type === 'burial');
+}
+
+function showDmResponse(type) {
+  document.getElementById('dm-response-self').style.display = type === 'self' ? 'block' : 'none';
+  document.getElementById('dm-response-others').style.display = type === 'others' ? 'block' : 'none';
+  document.getElementById('dm-btn-self').classList.toggle('active', type === 'self');
+  document.getElementById('dm-btn-others').classList.toggle('active', type === 'others');
 }
 
 // ============================================================
